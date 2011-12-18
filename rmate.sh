@@ -51,6 +51,12 @@ function showusage {
 "
 }
 
+function log {
+	if [[ $verbose = true ]]; then
+		echo "$@" 1>&2
+	fi
+}
+
 while getopts H:p:wfvh OPTIONS; do
     case $OPTIONS in
         H)
@@ -87,12 +93,6 @@ realpath="`cd \`dirname $filepath\`; pwd -P`/$filepath"
 #------------------------------------------------------------
 # main
 #------------------------------------------------------------
-function log {
-	if [[ $verbose = true ]]; then
-		echo "$@" 1>&2
-	fi
-}
-
 function handle_connection {
 	while read 0<&3; do
 		echo ""
