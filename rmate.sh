@@ -126,3 +126,9 @@ fi
 
 echo 1>&3
 echo "." 1>&3
+
+if [[ $nowait = true ]]; then
+	( (handle_connection &) &)
+else
+	handle_connection
+fi
