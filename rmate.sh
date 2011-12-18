@@ -93,6 +93,17 @@ function log {
 	fi
 }
 
+function handle_connection {
+	local server_info=""
+	
+	read server_info 0<&3
+	
+	log $server_info
+	
+	while read 0<&3; do
+		log $REPLY	
+	done
+}
 
 # connect to textmate and send command
 #
