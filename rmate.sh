@@ -153,9 +153,15 @@ function handle_connection {
 			(
 				set -e
 			
-				cp "$token" "$token~"
+				if [ -f "$token" ]; then
+					cp "$token" "$token~"
+				fi
+				
 				echo $data >"$token"
-				rm "$token~"
+				
+				if [ -f "$token~" ]; then
+					rm "$token~"
+				fi
 			) >/dev/null 2>&1
 			
 			status=$?
