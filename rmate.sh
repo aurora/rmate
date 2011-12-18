@@ -90,6 +90,15 @@ fi
 
 realpath="`cd \`dirname $filepath\`; pwd -P`/$filepath"
 
+if [ ! -w "$filepath" ]; then
+	if [[ $force = false ]]; then
+		echo "File $filepath is not writable! Use -f to open anyway."
+		exit 1
+	elif [[ $verbose = true ]]; then
+		log "File $filepath is not writable! Opening anyway."
+	fi
+fi
+
 #------------------------------------------------------------
 # main
 #------------------------------------------------------------
