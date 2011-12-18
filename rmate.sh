@@ -33,7 +33,7 @@ filepath=""
 
 host="localhost"
 port=52698
-verbose=true
+verbose=false
 nowait=true
 force=false
 
