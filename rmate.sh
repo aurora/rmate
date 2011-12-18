@@ -84,16 +84,6 @@ fi
 
 realpath="`cd \`dirname $filepath\`; pwd -P`/$filepath"
 
-# command handler
-#
-# function handle_save {
-# }
-# 
-# function handle_close {
-# }
-# 
-# function handle_cmd {
-# }
 
 # connect to textmate and send command
 #
