@@ -107,17 +107,23 @@ function handle_connection {
 	local name
 	local value
 	local token
-	local size
 	local data
+	local tmp
+	local status
 	
 	while read 0<&3; do
+		REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
+		REPLY="${REPLY%"${REPLY##*[![:space:]]}"}"
+
 		cmd=$REPLY
 
 		token=""
 		data=""
-		size=0
 
 		while read 0<&3; do
+			REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
+			REPLY="${REPLY%"${REPLY##*[![:space:]]}"}"
+
 			if [ "$REPLY" = "" ]; then
 				break
 			fi
@@ -126,34 +132,38 @@ function handle_connection {
 			value="${REPLY##*:}"
 			value="${value#"${value%%[![:space:]]*}"}"		# fix textmate syntax highlighting: "
 						
-			echo "$name $value"
-			
 			case $name in
 				"token")
 					token=$value
 					;;
 				"data")
-					size=$value
-					
-					while read -n $size 0<&3; do
-						data="$data"
-					done
+					read -n $value tmp <&3
+					data="$data$tmp"
 					;;
 				*)
 					;;
 			esac
 		done
 
-		# case $cmd in
-		# 	"save")
-		# 		handle_save
-		# 		;;
-		# 	"close")
-		# 		handle_close
-		# 		;;
-		# 	*)
-		# 		;;
-		# esac
+		if [[ "$cmd" = "close" ]]; then
+			log "Closing $token"
+		elif [[ "$cmd" = "save" ]]; then
+			log "Saving $token"
+
+			(
+				set -e
+			
+				cp "$token" "$token~"
+				echo $data >"$token"
+				rm "$token~"
+			) >/dev/null 2>&1
+			
+			status=$?
+			
+			if [[ $status -gt 0 ]]; then
+				log "Save failed! $status"
+			fi
+		fi
 	done
 	
 	log "Done"
