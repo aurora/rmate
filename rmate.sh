@@ -107,7 +107,6 @@ function handle_connection {
     local name
     local value
     local token
-    local data
     local tmp
     local status
     
@@ -118,7 +117,7 @@ function handle_connection {
         cmd=$REPLY
 
         token=""
-        data=""
+        tmp=""
 
         while read 0<&3; do
             REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
@@ -137,8 +136,12 @@ function handle_connection {
                     token=$value
                     ;;
                 "data")
-                    read -n $value tmp <&3
-                    data="$data$tmp"
+                    if [ "$tmp" = "" ]; then
+                        tmp="/tmp/rmate.$RANDOM.$$"
+                        touch "$tmp"
+                    fi
+                
+                    dd bs=$value count=1 <&3 >>"$tmp" 2>/dev/null
                     ;;
                 *)
                     ;;
@@ -150,25 +153,7 @@ function handle_connection {
         elif [[ "$cmd" = "save" ]]; then
             log "Saving $token"
 
-            (
-                set -e
-            
-                if [ -f "$token" ]; then
-                    cp "$token" "$token~"
-                fi
-                
-                echo $data >"$token"
-                
-                if [ -f "$token~" ]; then
-                    rm "$token~"
-                fi
-            ) >/dev/null 2>&1
-            
-            status=$?
-            
-            if [[ $status -gt 0 ]]; then
-                log "Save failed! $status"
-            fi
+            mv "$tmp" "$token"
         fi
     done
     
