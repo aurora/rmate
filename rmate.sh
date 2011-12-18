@@ -90,7 +90,7 @@ fi
 
 realpath="`cd \`dirname $filepath\`; pwd -P`/$filepath"
 
-if [ ! -w "$filepath" ]; then
+if [ -f "$filepath" ] && [ ! -w "$filepath" ]; then
 	if [[ $force = false ]]; then
 		echo "File $filepath is not writable! Use -f to open anyway."
 		exit 1
