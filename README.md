@@ -8,7 +8,7 @@ ruby. Here is my attempt to replace this ruby script with a shell script, becaus
 some cases a ruby installation might just be to much overhead for just editing remote
 files.
 
-The shell script needs to be copied to the server, you want to remote edit files, first.
+The shell script needs to be copied to the server, you want to remote edit files, on.
 After that, just open a SSH connection specifying a remote tunnel in addition:
 
     ssh -R 52698:localhost:52698 user@example.com
@@ -44,7 +44,7 @@ rmate.sh takes a file as last argument. This argument is always required.
 ## Disclaimer
 
 Use with caution. This software may contain serious bugs. I can not be made responsible for
-any Damage the software may cause to your system or files.
+any damage the software may cause to your system or files.
 
 ## License
 
