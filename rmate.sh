@@ -103,11 +103,60 @@ fi
 # main
 #------------------------------------------------------------
 function handle_connection {
+	local cmd
+	local name
+	local value
+	local token
+	local size
+	local data
+	
 	while read 0<&3; do
-		echo ""
-		
-#		log $REPLY	
+		cmd=$REPLY
+
+		token=""
+		data=""
+		size=0
+
+		while read 0<&3; do
+			if [ "$REPLY" = "" ]; then
+				break
+			fi
+			
+			name="${REPLY%%:*}"
+			value="${REPLY##*:}"
+			value="${value#"${value%%[![:space:]]*}"}"		# fix textmate syntax highlighting: "
+						
+			echo "$name $value"
+			
+			case $name in
+				"token")
+					token=$value
+					;;
+				"data")
+					size=$value
+					
+					while read -n $size 0<&3; do
+						data="$data"
+					done
+					;;
+				*)
+					;;
+			esac
+		done
+
+		# case $cmd in
+		# 	"save")
+		# 		handle_save
+		# 		;;
+		# 	"close")
+		# 		handle_close
+		# 		;;
+		# 	*)
+		# 		;;
+		# esac
 	done
+	
+	log "Done"
 }
 
 # connect to textmate and send command
