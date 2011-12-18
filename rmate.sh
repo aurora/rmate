@@ -42,19 +42,19 @@ force=false
 function showusage {
     echo "usage: $0 [-H host-name] [-p port-number] [-w] [-f] [-v] file-path
 
--H	connect to host default: $host)
--p	port number to use for connection (default: $port)
--w	wait for file to be closed by TextMate
--f	open even if file is not writable
--v	verbose logging messages
--h	display this usage information
+-H  connect to host default: $host)
+-p  port number to use for connection (default: $port)
+-w  wait for file to be closed by TextMate
+-f  open even if file is not writable
+-v  verbose logging messages
+-h  display this usage information
 "
 }
 
 function log {
-	if [[ $verbose = true ]]; then
-		echo "$@" 1>&2
-	fi
+    if [[ $verbose = true ]]; then
+        echo "$@" 1>&2
+    fi
 }
 
 while getopts H:p:wfvh OPTIONS; do
@@ -91,88 +91,88 @@ fi
 realpath="`cd \`dirname $filepath\`; pwd -P`/$filepath"
 
 if [ -f "$filepath" ] && [ ! -w "$filepath" ]; then
-	if [[ $force = false ]]; then
-		echo "File $filepath is not writable! Use -f to open anyway."
-		exit 1
-	elif [[ $verbose = true ]]; then
-		log "File $filepath is not writable! Opening anyway."
-	fi
+    if [[ $force = false ]]; then
+        echo "File $filepath is not writable! Use -f to open anyway."
+        exit 1
+    elif [[ $verbose = true ]]; then
+        log "File $filepath is not writable! Opening anyway."
+    fi
 fi
 
 #------------------------------------------------------------
 # main
 #------------------------------------------------------------
 function handle_connection {
-	local cmd
-	local name
-	local value
-	local token
-	local data
-	local tmp
-	local status
-	
-	while read 0<&3; do
-		REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
-		REPLY="${REPLY%"${REPLY##*[![:space:]]}"}"
+    local cmd
+    local name
+    local value
+    local token
+    local data
+    local tmp
+    local status
+    
+    while read 0<&3; do
+        REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
+        REPLY="${REPLY%"${REPLY##*[![:space:]]}"}"
 
-		cmd=$REPLY
+        cmd=$REPLY
 
-		token=""
-		data=""
+        token=""
+        data=""
 
-		while read 0<&3; do
-			REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
-			REPLY="${REPLY%"${REPLY##*[![:space:]]}"}"
+        while read 0<&3; do
+            REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
+            REPLY="${REPLY%"${REPLY##*[![:space:]]}"}"
 
-			if [ "$REPLY" = "" ]; then
-				break
-			fi
-			
-			name="${REPLY%%:*}"
-			value="${REPLY##*:}"
-			value="${value#"${value%%[![:space:]]*}"}"		# fix textmate syntax highlighting: "
-						
-			case $name in
-				"token")
-					token=$value
-					;;
-				"data")
-					read -n $value tmp <&3
-					data="$data$tmp"
-					;;
-				*)
-					;;
-			esac
-		done
+            if [ "$REPLY" = "" ]; then
+                break
+            fi
+            
+            name="${REPLY%%:*}"
+            value="${REPLY##*:}"
+            value="${value#"${value%%[![:space:]]*}"}"      # fix textmate syntax highlighting: "
+                        
+            case $name in
+                "token")
+                    token=$value
+                    ;;
+                "data")
+                    read -n $value tmp <&3
+                    data="$data$tmp"
+                    ;;
+                *)
+                    ;;
+            esac
+        done
 
-		if [[ "$cmd" = "close" ]]; then
-			log "Closing $token"
-		elif [[ "$cmd" = "save" ]]; then
-			log "Saving $token"
+        if [[ "$cmd" = "close" ]]; then
+            log "Closing $token"
+        elif [[ "$cmd" = "save" ]]; then
+            log "Saving $token"
 
-			(
-				set -e
-			
-				if [ -f "$token" ]; then
-					cp "$token" "$token~"
-				fi
-				
-				echo $data >"$token"
-				
-				if [ -f "$token~" ]; then
-					rm "$token~"
-				fi
-			) >/dev/null 2>&1
-			
-			status=$?
-			
-			if [[ $status -gt 0 ]]; then
-				log "Save failed! $status"
-			fi
-		fi
-	done
-	
-	log "Done"
+            (
+                set -e
+            
+                if [ -f "$token" ]; then
+                    cp "$token" "$token~"
+                fi
+                
+                echo $data >"$token"
+                
+                if [ -f "$token~" ]; then
+                    rm "$token~"
+                fi
+            ) >/dev/null 2>&1
+            
+            status=$?
+            
+            if [[ $status -gt 0 ]]; then
+                log "Save failed! $status"
+            fi
+        fi
+    done
+    
+    log "Done"
 }
 
 # connect to textmate and send command
@@ -202,7 +202,7 @@ echo 1>&3
 echo "." 1>&3
 
 if [[ $nowait = true ]]; then
-	( (handle_connection &) &)
+    ( (handle_connection &) &)
 else
-	handle_connection
+    handle_connection
 fi
