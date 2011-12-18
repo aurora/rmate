@@ -42,7 +42,7 @@ force=false
 function showusage {
     echo "usage: $0 [-H host-name] [-p port-number] [-w] [-f] [-v] file-path
 
--H  connect to host default: $host)
+-H  connect to host (default: $host)
 -p  port number to use for connection (default: $port)
 -w  wait for file to be closed by TextMate
 -f  open even if file is not writable
