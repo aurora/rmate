@@ -84,6 +84,15 @@ fi
 
 realpath="`cd \`dirname $filepath\`; pwd -P`/$filepath"
 
+#------------------------------------------------------------
+# main
+#------------------------------------------------------------
+function log {
+	if [[ $verbose = true ]]; then
+		echo "$@" 1>&2
+	fi
+}
+
 
 # connect to textmate and send command
 #
