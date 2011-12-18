@@ -94,20 +94,20 @@ function log {
 }
 
 function handle_connection {
-	local server_info=""
-	
-	read server_info 0<&3
-	
-	log $server_info
-	
 	while read 0<&3; do
-		log $REPLY	
+		echo ""
+		
+#		log $REPLY	
 	done
 }
 
 # connect to textmate and send command
 #
 exec 3<> /dev/tcp/$host/$port
+
+read server_info 0<&3
+
+log $server_info
 
 echo "open" 1>&3
 echo "display-name: $hostname:$filepath" 1>&3
