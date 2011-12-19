@@ -28,7 +28,7 @@
 
 # init
 # 
-hostname=`hostname -f`
+hostname=`hostname`
 filepath=""
 
 host="localhost"
