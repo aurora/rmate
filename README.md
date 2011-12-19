@@ -9,15 +9,35 @@ some cases a ruby installation might just be to much overhead for just editing r
 files.
 
 The shell script needs to be copied to the server, you want to remote edit files, on.
-After that, just open a SSH connection specifying a remote tunnel in addition:
+After that, open your TM2 preferences and enable "Allow rmate connections" setting in
+the "Terminal" settings and adjust the setting "Access for" according to your needs:
 
-    ssh -R 52698:localhost:52698 user@example.com
+### Local clients
 
-Now you are logged in on the server and a tunnel was opened. You can now just execute
+It's a good idea to allow access only for local clients. In this case you need to open
+a SSH connection to the system you want to edit a file on and specify a remote tunnel in
+addition:
 
-    ./rmate.sh test.txt
+	ssh -R 52698:localhost:52698 user@example.com
 
-To open a new TextMate window and editing the file "test.txt" inside.
+If you are logged in on the remote system, you can now just execute
+
+	rmate.sh test.txt
+	
+
+### Remote clients
+
+On some machines, where port forwarding is not possible, for example due to a missing ssh
+daemon, you can allow accoss for "remote clients". Just ssh or telnet to the remote machine
+and execute:
+
+    rmate.sh -H textmate-host test.txt
+
+### Example
+
+Example session: Editing html file located on an SGI o2:
+
+	https://github.com/aurora/rmate/wiki/Screens
 
 ## Requirements
 
