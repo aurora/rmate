@@ -181,7 +181,7 @@ echo "re-activate: yes" 1>&3
 echo "token: $filepath" 1>&3
 
 if [ -f $filepath ]; then
-    filesize=`cat $filepath | wc -c`
+    filesize=`ls -l $filepath | awk '{print $5}'`
     echo "data: $filesize" 1>&3
     cat $filepath 1>&3
 else
