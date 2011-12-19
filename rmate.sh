@@ -164,6 +164,11 @@ function handle_connection {
 #
 exec 3<> /dev/tcp/$host/$port
 
+if [ $? -gt 0 ]; then
+	echo "Unable to connect to TextMate on $host:$port"
+	exit 1
+fi
+
 read server_info 0<&3
 
 log $server_info
