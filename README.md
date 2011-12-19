@@ -35,9 +35,7 @@ and execute:
 
 ### Example
 
-Example session: Editing html file located on an SGI o2:
-
-	https://github.com/aurora/rmate/wiki/Screens
+Example session: Editing html file located on an SGI o2: <https://github.com/aurora/rmate/wiki/Screens>
 
 ## Requirements
 
