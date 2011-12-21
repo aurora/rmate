@@ -108,7 +108,6 @@ function handle_connection {
     local value
     local token
     local tmp
-    local status
     
     while read 0<&3; do
         REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
