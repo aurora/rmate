@@ -31,8 +31,8 @@
 hostname=`hostname`
 filepath=""
 
-host="localhost"
-port=52698
+host="${RMATE_HOST:-localhost}"
+port="${RMATE_PORT:-52698}"
 verbose=false
 nowait=true
 force=false
