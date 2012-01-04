@@ -152,7 +152,8 @@ function handle_connection {
         elif [[ "$cmd" = "save" ]]; then
             log "Saving $token"
 
-            mv "$tmp" "$token"
+            cat "$tmp" >  "$token"
+            rm "$tmp"		
         fi
     done
     
