@@ -1,4 +1,4 @@
-# rmate.sh
+# rmate
 
 ## Description
 
@@ -22,7 +22,7 @@ addition:
 
 If you are logged in on the remote system, you can now just execute
 
-	rmate.sh test.txt
+	rmate test.txt
 	
 
 ### Remote clients
@@ -31,7 +31,7 @@ On some machines, where port forwarding is not possible, for example due to a mi
 daemon, you can allow accoss for "remote clients". Just ssh or telnet to the remote machine
 and execute:
 
-    rmate.sh -H textmate-host test.txt
+    rmate -H textmate-host test.txt
 
 ### Example
 
@@ -44,7 +44,7 @@ older linux distributions, like Ubuntu 9.x.
 
 ## Usage
 
-    $ ./rmate.sh [-H host-name] [-p port-number] [-w] [-f] [-v] file-path
+    $ ./rmate [-H host-name] [-p port-number] [-w] [-f] [-v] file-path
 
 ### Required parameters
 
@@ -66,7 +66,7 @@ any damage the software may cause to your system or files.
 
 ## License
 
-rmate.sh
+rmate
 
 Copyright (C) 2011 by Harald Lapp <harald@octris.org>
 
