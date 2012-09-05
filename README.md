@@ -28,7 +28,7 @@ If you are logged in on the remote system, you can now just execute
 ### Remote clients
 
 On some machines, where port forwarding is not possible, for example due to a missing ssh
-daemon, you can allow accoss for "remote clients". Just ssh or telnet to the remote machine
+daemon, you can allow access for "remote clients". Just ssh or telnet to the remote machine
 and execute:
 
     rmate -H textmate-host test.txt
