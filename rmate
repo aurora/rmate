@@ -58,22 +58,22 @@ function log {
 }
 
 function dirpath {
-  (cd `dirname $1`; pwd -P)
+  (cd `dirname $1` && pwd -P) 2>/dev/null
 }
 
 function canonicalize {
     filepath="$1"
-    dir="`dirpath $filepath`"
+    dir="`dirpath $filepath`" || return $?
+    filename="`basename $filepath`"
     if [ -L "$filepath" ]; then
-        relativepath="`cd $dir; readlink \`basename $filepath\``"
-        result="`dirpath $relativepath`/`basename $relativepath`"
+        relativepath="`cd $dir && readlink $filename`"
+        dir="`dirpath $relativepath`" || return $?
+        filename="`basename $relativepath`"
+    fi
+    if [ "$dir" = '/' ]; then
+        result="$dir$filename"
     else
-        result=`basename $filepath`
-        if [ "$dir" = '/' ]; then
-            result="$dir$result"
-        else
-            result="$dir/$result"
-        fi
+        result="$dir/$filename"
     fi
     echo $result
 }
@@ -116,15 +116,23 @@ if [ ! "${#@}" -eq 0 ]; then
 fi
 
 realpath=`canonicalize $filepath`
-echo $realpath
+if [ $? -ne 0 ]; then
+    echo "Path to the file doesn't exist."
+    exit 1
+fi
 
-if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
-    if [[ $force = false ]]; then
-        echo "File $filepath is not writable! Use -f to open anyway."
-        exit 1
-    elif [[ $verbose = true ]]; then
-        log "File $filepath is not writable! Opening anyway."
+if [ -f "$realpath" ]; then
+    if [ ! -w "$realpath" ]; then
+        if [[ $force = false ]]; then
+            echo "File $filepath is not writable! Use -f to open anyway."
+            exit 1
+        elif [[ $verbose = true ]]; then
+            log "File $filepath is not writable! Opening anyway."
+        fi
     fi
+elif [ ! -w "`dirpath $realpath`" ]; then
+    echo "File $filepath doesn't exist and cannot be created."
+    exit 1
 fi
 
 #------------------------------------------------------------
