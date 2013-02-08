@@ -145,7 +145,7 @@ function handle_connection {
                         touch "$tmp"
                     fi
                 
-                    head -c$value <&3 >>"$tmp" 2>/dev/null
+                    dd bs=1 count=$value <&3 >>"$tmp" 2>/dev/null
                     ;;
                 *)
                     ;;
