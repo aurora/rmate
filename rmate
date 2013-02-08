@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# rmate.sh
-# Copyright (C) 2011 by Harald Lapp <harald@octris.org>
+# rmate
+# Copyright (C) 2011-2013 by Harald Lapp <harald@octris.org>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,6 +24,11 @@
 #
 # This script is a pure bash compatible shell script implementing remote
 # textmate functionality
+#
+
+#
+# Thanks very much to all users and contributors! All bug-reports, 
+# feature-requests, patches, etc. are greatly appreciated! :-)
 #
 
 # init
