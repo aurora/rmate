@@ -38,6 +38,9 @@ filepath=""
 
 host="${RMATE_HOST:-localhost}"
 port="${RMATE_PORT:-52698}"
+selection=""
+displayname=""
+filetype=""
 verbose=false
 nowait=true
 force=false
@@ -45,11 +48,14 @@ force=false
 # process command-line parameters
 #
 function showusage {
-    echo "usage: $0 [-H host-name] [-p port-number] [-w] [-f] [-v] file-path
+    echo "usage: $0 [-H host-name] [-p port-number] [-w] [-l line-number] [-m display-name] [-t file-type] [-f] [-v] file-path
 
 -H  connect to host (default: $host)
 -p  port number to use for connection (default: $port)
 -w  wait for file to be closed by TextMate
+-l  place caret on line number after loading file
+-m  the display name shown in TextMate
+-t  treat file as having specified type
 -f  open even if file is not writable
 -v  verbose logging messages
 -h  display this usage information
@@ -62,7 +68,7 @@ function log {
     fi
 }
 
-while getopts H:p:wfvh OPTIONS; do
+while getopts H:p:wl:m:t:fvh OPTIONS; do
     case $OPTIONS in
         H)
             host=$OPTARG;;
@@ -70,6 +76,12 @@ while getopts H:p:wfvh OPTIONS; do
             port=$OPTARG;;
         w) 
             nowait=false;;
+        l)
+            selection=$OPTARG;;
+        m)
+            displayname=$OPTARG;;
+        t)
+            filetype=$OPTARG;;
         f)
             force=true;;
         v)
@@ -102,6 +114,10 @@ if [ -f "$filepath" ] && [ ! -w "$filepath" ]; then
     elif [[ $verbose = true ]]; then
         log "File $filepath is not writable! Opening anyway."
     fi
+fi
+
+if [ "$displayname" = "" ]; then
+    displayname="$hostname:$filepath"
 fi
 
 #------------------------------------------------------------
@@ -179,11 +195,19 @@ read server_info 0<&3
 log $server_info
 
 echo "open" 1>&3
-echo "display-name: $hostname:$filepath" 1>&3
+echo "display-name: $displayname" 1>&3
 echo "real-path: $realpath" 1>&3
 echo "data-on-save: yes" 1>&3
 echo "re-activate: yes" 1>&3
 echo "token: $filepath" 1>&3
+
+if [ "$selection" != "" ]; then
+    echo "selection: $selection" 1>&3
+fi
+
+if [ "$filetype" != "" ]; then
+    echo "file-type: $filetype" 1>&3
+fi
 
 if [ -f $filepath ]; then
     filesize=`ls -l $filepath | awk '{print $5}'`
