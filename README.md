@@ -44,7 +44,7 @@ older linux distributions, like Ubuntu 9.x.
 
 ## Usage
 
-    $ ./rmate [-H host-name] [-p port-number] [-w] [-f] [-v] file-path
+    $ ./rmate [-H host-name] [-p port-number] [-w] [-l line-number] [-m display-name] [-t file-type] [-f] [-v] file-path
 
 ### Required parameters
 
@@ -55,6 +55,9 @@ rmate.sh takes a file as last argument. This argument is always required.
     -H  connect to host (default: localhost)
     -p  port number to use for connection (default: 52698)
     -w  wait for file to be closed by TextMate
+    -l  place caret on line number after loading file
+    -m  the display name shown in TextMate
+    -t  treat file as having specified type
     -f  open even if file is not writable
     -v  verbose logging messages
     -h  display this usage information
