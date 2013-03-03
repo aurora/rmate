@@ -221,6 +221,7 @@ echo 1>&3
 echo "." 1>&3
 
 if [[ $nowait = true ]]; then
+    exec </dev/null >/dev/null 2>/dev/null
     ( (handle_connection &) &)
 else
     handle_connection
