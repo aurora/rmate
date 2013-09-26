@@ -33,7 +33,21 @@
 
 # init
 # 
-hostname=`hostname`
+function hostname_command(){
+    if hash hostname 2>/dev/null; then
+        echo "hostname"
+    else {
+		HOSTNAME_DESCRIPTOR="/proc/sys/kernel/hostname"
+		if test -r "$HOSTNAME_DESCRIPTOR"; then
+	        echo "cat $HOSTNAME_DESCRIPTOR"
+		else
+			echo "hostname"
+		fi
+		}
+    fi
+}
+hostname_=$(hostname_command)
+hostname=`$hostname_`
 filepath=""
 
 host="${RMATE_HOST:-localhost}"
@@ -226,3 +240,4 @@ if [[ $nowait = true ]]; then
 else
     handle_connection
 fi
+
