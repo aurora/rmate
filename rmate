@@ -37,13 +37,13 @@ function hostname_command(){
     if command -v hostname >/dev/null 2>&1; then
         echo "hostname"
     else {
-		HOSTNAME_DESCRIPTOR="/proc/sys/kernel/hostname"
-		if test -r "$HOSTNAME_DESCRIPTOR"; then
-	        echo "cat $HOSTNAME_DESCRIPTOR"
-		else
-			echo "hostname"
-		fi
-		}
+        HOSTNAME_DESCRIPTOR="/proc/sys/kernel/hostname"
+        if test -r "$HOSTNAME_DESCRIPTOR"; then
+            echo "cat $HOSTNAME_DESCRIPTOR"
+        else
+            echo "hostname"
+        fi
+        }
     fi
 }
 
@@ -188,7 +188,7 @@ function handle_connection {
             log "Saving $token"
 
             cat "$tmp" >  "$token"
-            rm "$tmp"		
+            rm "$tmp"       
         fi
     done
     
@@ -200,8 +200,8 @@ function handle_connection {
 exec 3<> /dev/tcp/$host/$port
 
 if [ $? -gt 0 ]; then
-	echo "Unable to connect to TextMate on $host:$port"
-	exit 1
+    echo "Unable to connect to TextMate on $host:$port"
+    exit 1
 fi
 
 read server_info 0<&3
