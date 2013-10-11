@@ -34,7 +34,7 @@
 # init
 # 
 function hostname_command(){
-    if hash hostname 2>/dev/null; then
+    if command -v hostname >/dev/null 2>&1; then
         echo "hostname"
     else {
 		HOSTNAME_DESCRIPTOR="/proc/sys/kernel/hostname"
