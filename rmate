@@ -46,8 +46,8 @@ function hostname_command(){
 		}
     fi
 }
-hostname_=$(hostname_command)
-hostname=`$hostname_`
+
+hostname=$($(hostname_command))
 filepath=""
 
 host="${RMATE_HOST:-localhost}"
