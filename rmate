@@ -33,6 +33,8 @@
 
 # init
 # 
+
+# determine hostname
 function hostname_command(){
     if command -v hostname >/dev/null 2>&1; then
         echo "hostname"
