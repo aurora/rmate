@@ -50,10 +50,37 @@ function hostname_command(){
 }
 
 hostname=$($(hostname_command))
-filepath=""
 
-host="${RMATE_HOST:-localhost}"
-port="${RMATE_PORT:-52698}"
+# default configuration
+host=localhost
+port=52698
+
+function load_config {
+    local rc_file=$1
+    local row
+    
+    if [ -f "$rc_file" ]; then
+        while read row; do
+            echo $row
+            
+            if [[ "$row" =~ ^host:[[:space:]]+([^ ]+) ]]; then
+                host=${BASH_REMATCH[1]}
+            elif [[ "$row" =~ ^port:[[:space:]]+([0-9]+) ]]; then
+                port=${BASH_REMATCH[1]}
+            fi
+        done < "$rc_file"
+    fi
+}
+
+for i in /etc/rmate.rc ~/.rmate.rc; do
+    load_config $i
+done
+
+host="${RMATE_HOST:-$host}"
+port="${RMATE_PORT:-$port}"
+
+# misc initialization
+filepath=""
 selection=""
 displayname=""
 filetype=""
