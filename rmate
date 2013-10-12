@@ -61,8 +61,6 @@ function load_config {
     
     if [ -f "$rc_file" ]; then
         while read row; do
-            echo $row
-            
             if [[ "$row" =~ ^host:[[:space:]]+([^ ]+) ]]; then
                 host=${BASH_REMATCH[1]}
             elif [[ "$row" =~ ^port:[[:space:]]+([0-9]+) ]]; then
