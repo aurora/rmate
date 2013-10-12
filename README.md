@@ -62,6 +62,23 @@ _rmate_ takes a file as last argument. This argument is always required.
     -v  verbose logging messages
     -h  display this usage information
 
+### Default parameter configuration
+
+Some default parameters (_host_ and _port_) can be configured by defining them 
+as the environment variables `RMATE_HOST` and `RMATE_PORT` or by putting them 
+in a configuration file. The configuration files loaded are `/etc/rmate.rc` 
+and `~/.rmate.rc`, e.g.:
+
+    host: auto  # prefer host from SSH_CONNECTION over localhost
+    port: 52698
+
+The precedence for setting the configuration is (higher precedence counts):
+
+1. default (localhost, 52698)
+2. /etc/rmate.rc
+3. ~/.rmate.rc
+4. environment variables (RMATE\_HOST, RMATE\_PORT)
+
 ## Disclaimer
 
 Use with caution. This software may contain serious bugs. I can not be made responsible for
