@@ -48,7 +48,7 @@ older linux distributions, like Ubuntu 9.x.
 
 ### Required parameters
 
-rmate.sh takes a file as last argument. This argument is always required.
+_rmate_ takes a file as last argument. This argument is always required.
 
 ### Optional parameters
 
