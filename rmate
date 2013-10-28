@@ -59,11 +59,14 @@ function load_config {
     local rc_file=$1
     local row
     
+    local host_pattern="^port:[[:space:]]+([0-9]+)"
+    local port_pattern="^host:[[:space:]]+([^ ]+)"
+    
     if [ -f "$rc_file" ]; then
         while read row; do
-            if [[ "$row" =~ "^host:[[:space:]]+([^ ]+)" ]]; then
+            if [[ "$row" =~ $host_pattern ]]; then
                 host=${BASH_REMATCH[1]}
-            elif [[ "$row" =~ "^port:[[:space:]]+([0-9]+)" ]]; then
+            elif [[ "$row" =~ $port_pattern ]]; then
                 port=${BASH_REMATCH[1]}
             fi
         done < "$rc_file"
