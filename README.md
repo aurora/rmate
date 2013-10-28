@@ -44,20 +44,40 @@ older linux distributions, like Ubuntu 9.x.
 
 ## Usage
 
-    $ ./rmate [-H host-name] [-p port-number] [-w] [-f] [-v] file-path
+    $ ./rmate [-H host-name] [-p port-number] [-w] [-l line-number] [-m display-name] [-t file-type] [-f] [-v] file-path
 
 ### Required parameters
 
-rmate.sh takes a file as last argument. This argument is always required.
+_rmate_ takes a file as last argument. This argument is always required.
 
 ### Optional parameters
 
     -H  connect to host (default: localhost)
     -p  port number to use for connection (default: 52698)
     -w  wait for file to be closed by TextMate
+    -l  place caret on line number after loading file
+    -m  the display name shown in TextMate
+    -t  treat file as having specified type
     -f  open even if file is not writable
     -v  verbose logging messages
     -h  display this usage information
+
+### Default parameter configuration
+
+Some default parameters (_host_ and _port_) can be configured by defining them 
+as the environment variables `RMATE_HOST` and `RMATE_PORT` or by putting them 
+in a configuration file. The configuration files loaded are `/etc/rmate.rc` 
+and `~/.rmate.rc`, e.g.:
+
+    host: auto  # prefer host from SSH_CONNECTION over localhost
+    port: 52698
+
+The precedence for setting the configuration is (higher precedence counts):
+
+1. default (localhost, 52698)
+2. /etc/rmate.rc
+3. ~/.rmate.rc
+4. environment variables (RMATE\_HOST, RMATE\_PORT)
 
 ## Disclaimer
 

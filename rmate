@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# rmate.sh
-# Copyright (C) 2011 by Harald Lapp <harald@octris.org>
+# rmate
+# Copyright (C) 2011-2013 by Harald Lapp <harald@octris.org>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,13 +26,69 @@
 # textmate functionality
 #
 
+#
+# Thanks very much to all users and contributors! All bug-reports, 
+# feature-requests, patches, etc. are greatly appreciated! :-)
+#
+
 # init
 # 
-hostname=`hostname`
-filepath=""
 
-host="${RMATE_HOST:-localhost}"
-port="${RMATE_PORT:-52698}"
+# determine hostname
+function hostname_command(){
+    if command -v hostname >/dev/null 2>&1; then
+        echo "hostname"
+    else {
+        HOSTNAME_DESCRIPTOR="/proc/sys/kernel/hostname"
+        if test -r "$HOSTNAME_DESCRIPTOR"; then
+            echo "cat $HOSTNAME_DESCRIPTOR"
+        else
+            echo "hostname"
+        fi
+        }
+    fi
+}
+
+hostname=$($(hostname_command))
+
+# default configuration
+host=localhost
+port=52698
+
+function load_config {
+    local rc_file=$1
+    local row
+    
+    local host_pattern="^port:[[:space:]]+([0-9]+)"
+    local port_pattern="^host:[[:space:]]+([^ ]+)"
+    
+    if [ -f "$rc_file" ]; then
+        while read row; do
+            if [[ "$row" =~ $host_pattern ]]; then
+                host=${BASH_REMATCH[1]}
+            elif [[ "$row" =~ $port_pattern ]]; then
+                port=${BASH_REMATCH[1]}
+            fi
+        done < "$rc_file"
+    fi
+}
+
+for i in /etc/rmate.rc ~/.rmate.rc; do
+    load_config $i
+done
+
+host="${RMATE_HOST:-$host}"
+port="${RMATE_PORT:-$port}"
+
+if [[ "$host" = "auto" && "$SSH_CONNECTION" != "" ]]; then
+    host=${SSH_CONNECTION%% *}
+fi
+
+# misc initialization
+filepath=""
+selection=""
+displayname=""
+filetype=""
 verbose=false
 nowait=true
 force=false
@@ -40,11 +96,14 @@ force=false
 # process command-line parameters
 #
 function showusage {
-    echo "usage: $0 [-H host-name] [-p port-number] [-w] [-f] [-v] file-path
+    echo "usage: $0 [-H host-name] [-p port-number] [-w] [-l line-number] [-m display-name] [-t file-type] [-f] [-v] file-path
 
 -H  connect to host (default: $host)
 -p  port number to use for connection (default: $port)
 -w  wait for file to be closed by TextMate
+-l  place caret on line number after loading file
+-m  the display name shown in TextMate
+-t  treat file as having specified type
 -f  open even if file is not writable
 -v  verbose logging messages
 -h  display this usage information
@@ -78,7 +137,7 @@ function canonicalize {
     echo $result
 }
 
-while getopts H:p:wfvh OPTIONS; do
+while getopts H:p:wl:m:t:fvh OPTIONS; do
     case $OPTIONS in
         H)
             host=$OPTARG;;
@@ -86,6 +145,12 @@ while getopts H:p:wfvh OPTIONS; do
             port=$OPTARG;;
         w) 
             nowait=false;;
+        l)
+            selection=$OPTARG;;
+        m)
+            displayname=$OPTARG;;
+        t)
+            filetype=$OPTARG;;
         f)
             force=true;;
         v)
@@ -125,6 +190,10 @@ if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
     elif [[ $verbose = true ]]; then
         log "File $filepath is not writable! Opening anyway."
     fi
+fi
+
+if [ "$displayname" = "" ]; then
+    displayname="$hostname:$filepath"
 fi
 
 #------------------------------------------------------------
@@ -168,7 +237,7 @@ function handle_connection {
                         touch "$tmp"
                     fi
                 
-                    dd bs=$value count=1 <&3 >>"$tmp" 2>/dev/null
+                    dd bs=1 count=$value <&3 >>"$tmp" 2>/dev/null
                     ;;
                 *)
                     ;;
@@ -181,7 +250,7 @@ function handle_connection {
             log "Saving $token"
 
             cat "$tmp" >  "$token"
-            rm "$tmp"		
+            rm "$tmp"       
         fi
     done
     
@@ -193,8 +262,8 @@ function handle_connection {
 exec 3<> /dev/tcp/$host/$port
 
 if [ $? -gt 0 ]; then
-	echo "Unable to connect to TextMate on $host:$port"
-	exit 1
+    echo "Unable to connect to TextMate on $host:$port"
+    exit 1
 fi
 
 read server_info 0<&3
@@ -202,16 +271,24 @@ read server_info 0<&3
 log $server_info
 
 echo "open" 1>&3
-echo "display-name: $hostname:$filepath" 1>&3
+echo "display-name: $displayname" 1>&3
 echo "real-path: $realpath" 1>&3
 echo "data-on-save: yes" 1>&3
 echo "re-activate: yes" 1>&3
 echo "token: $filepath" 1>&3
 
-if [ -f $realpath ]; then
-    filesize=`ls -l $realpath | awk '{print $5}'`
+if [ "$selection" != "" ]; then
+    echo "selection: $selection" 1>&3
+fi
+
+if [ "$filetype" != "" ]; then
+    echo "file-type: $filetype" 1>&3
+fi
+
+if [ -f "$filepath" ]; then
+    filesize=`ls -lL "$realpath" | awk '{print $5}'`
     echo "data: $filesize" 1>&3
-    cat $realpath 1>&3
+    cat "$realpath" 1>&3
 else
     echo "data: 0" 1>&3
 fi
@@ -220,7 +297,9 @@ echo 1>&3
 echo "." 1>&3
 
 if [[ $nowait = true ]]; then
+    exec </dev/null >/dev/null 2>/dev/null
     ( (handle_connection &) &)
 else
     handle_connection
 fi
+
