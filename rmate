@@ -59,8 +59,8 @@ function load_config {
     local rc_file=$1
     local row
     
-    local host_pattern="^port:[[:space:]]+([0-9]+)"
-    local port_pattern="^host:[[:space:]]+([^ ]+)"
+    local host_pattern="^host:[[:space:]]+([^ ]+)"
+    local port_pattern="^port:[[:space:]]+([0-9]+)"
     
     if [ -f "$rc_file" ]; then
         while read row; do
