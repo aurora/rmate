@@ -122,12 +122,12 @@ function dirpath {
 
 function canonicalize {
     filepath="$1"
-    dir="`dirpath $filepath`"
+    dir=`dirpath "$filepath"`
     if [ -L "$filepath" ]; then
-        relativepath="`cd $dir; readlink \`basename $filepath\``"
-        result="`dirpath $relativepath`/`basename $relativepath`"
+        relativepath=`cd "$dir"; readlink \`basename "$filepath"\``
+        result=`dirpath "$relativepath"`/`basename "$relativepath"`
     else
-        result=`basename $filepath`
+        result=`basename "$filepath"`
         if [ "$dir" = '/' ]; then
             result="$dir$result"
         else
@@ -180,7 +180,7 @@ if [ ! "${#@}" -eq 0 ]; then
     echo "There are more than one files specified. Opening only $filepath and ignoring other."
 fi
 
-realpath=`canonicalize $filepath`
+realpath=`canonicalize "$filepath"`
 echo $realpath
 
 if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
