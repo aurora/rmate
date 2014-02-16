@@ -72,6 +72,11 @@ and `~/.rmate.rc`, e.g.:
     host: auto  # prefer host from SSH_CONNECTION over localhost
     port: 52698
 
+Alternative notation for configuration file is:
+
+    host=auto
+    port=52698
+
 The precedence for setting the configuration is (higher precedence counts):
 
 1. default (localhost, 52698)
