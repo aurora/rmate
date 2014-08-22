@@ -2,17 +2,17 @@
 
 # rmate
 # Copyright (C) 2011-2014 by Harald Lapp <harald@octris.org>
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -27,12 +27,12 @@
 #
 
 #
-# Thanks very much to all users and contributors! All bug-reports, 
+# Thanks very much to all users and contributors! All bug-reports,
 # feature-requests, patches, etc. are greatly appreciated! :-)
 #
 
 # init
-# 
+#
 
 # determine hostname
 function hostname_command(){
@@ -58,10 +58,10 @@ port=52698
 function load_config {
     local rc_file=$1
     local row
-    
+
     local host_pattern="^host(:[[:space:]]+|=)([^ ]+)"
     local port_pattern="^port(:[[:space:]]+|=)([0-9]+)"
-    
+
     if [ -f "$rc_file" ]; then
         while read row; do
             if [[ "$row" =~ $host_pattern ]]; then
@@ -143,7 +143,7 @@ while getopts H:p:wl:m:t:fvh OPTIONS; do
             host=$OPTARG;;
         p)
             port=$OPTARG;;
-        w) 
+        w)
             nowait=false;;
         l)
             selection=$OPTARG;;
@@ -205,7 +205,7 @@ function handle_connection {
     local value
     local token
     local tmp
-    
+
     while read 0<&3; do
         REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
         REPLY="${REPLY%"${REPLY##*[![:space:]]}"}"
@@ -222,11 +222,11 @@ function handle_connection {
             if [ "$REPLY" = "" ]; then
                 break
             fi
-            
+
             name="${REPLY%%:*}"
             value="${REPLY##*:}"
             value="${value#"${value%%[![:space:]]*}"}"      # fix textmate syntax highlighting: "
-                        
+
             case $name in
                 "token")
                     token=$value
@@ -236,7 +236,7 @@ function handle_connection {
                         tmp="/tmp/rmate.$RANDOM.$$"
                         touch "$tmp"
                     fi
-                
+
                     dd bs=1 count=$value <&3 >>"$tmp" 2>/dev/null
                     ;;
                 *)
@@ -250,10 +250,10 @@ function handle_connection {
             log "Saving $token"
 
             cat "$tmp" >  "$token"
-            rm "$tmp"       
+            rm "$tmp"
         fi
     done
-    
+
     log "Done"
 }
 
@@ -302,4 +302,3 @@ if [[ $nowait = true ]]; then
 else
     handle_connection
 fi
-
