@@ -180,20 +180,26 @@ if [ ! "${#@}" -eq 0 ]; then
     echo "There are more than one files specified. Opening only $filepath and ignoring other."
 fi
 
-realpath=`canonicalize "$filepath"`
-echo $realpath
+if [ "$filepath" != "-" ]; then
+    realpath=`canonicalize "$filepath"`
+    echo $realpath
 
-if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
-    if [[ $force = false ]]; then
-        echo "File $filepath is not writable! Use -f to open anyway."
-        exit 1
-    elif [[ $verbose = true ]]; then
-        log "File $filepath is not writable! Opening anyway."
+    if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
+        if [[ $force = false ]]; then
+            echo "File $filepath is not writable! Use -f to open anyway."
+            exit 1
+        elif [[ $verbose = true ]]; then
+            log "File $filepath is not writable! Opening anyway."
+        fi
     fi
-fi
 
-if [ "$displayname" = "" ]; then
-    displayname="$hostname:$filepath"
+    if [ "$displayname" = "" ]; then
+        displayname="$hostname:$filepath"
+    fi
+else
+    echo "Reading from stdin"
+    log "Reading from stdin"
+    displayname="$hostname:untitled"
 fi
 
 #------------------------------------------------------------
@@ -285,10 +291,15 @@ if [ "$filetype" != "" ]; then
     echo "file-type: $filetype" 1>&3
 fi
 
-if [ -f "$filepath" ]; then
+if [ "$filepath" != "-" ] && [ -f "$filepath" ]; then
     filesize=`ls -lL "$realpath" | awk '{print $5}'`
     echo "data: $filesize" 1>&3
     cat "$realpath" 1>&3
+elif [ "$filepath" = "-" ]; then
+    data=$(cat)
+    filesize=$(echo -e "$data" | wc -c)
+    echo "data: $filesize" 1>&3
+    echo "$data" 1>&3
 else
     echo "data: 0" 1>&3
 fi
