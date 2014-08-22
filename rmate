@@ -254,8 +254,9 @@ function handle_connection {
             log "Closing $token"
         elif [[ "$cmd" = "save" ]]; then
             log "Saving $token"
-
-            cat "$tmp" >  "$token"
+            if [ "$token" != "-" ]; then
+                cat "$tmp" >  "$token"
+            fi
             rm "$tmp"
         fi
     done
