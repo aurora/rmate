@@ -96,7 +96,8 @@ force=false
 # process command-line parameters
 #
 function showusage {
-    echo "usage: $0 [-H host-name] [-p port-number] [-w] [-l line-number] [-m display-name] [-t file-type] [-f] [-v] file-path
+    echo "usage: $(basename $0) [arguments] file-path  edit specified file
+   or: $(basename $0) [arguments] -          read text from stdin
 
 -H  connect to host (default: $host)
 -p  port number to use for connection (default: $port)
