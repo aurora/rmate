@@ -44,13 +44,15 @@ older linux distributions, like Ubuntu 9.x.
 
 ## Usage
 
-    $ ./rmate [-H host-name] [-p port-number] [-w] [-l line-number] [-m display-name] [-t file-type] [-f] [-v] file-path
+Edit specified file
 
-### Required parameters
+    $ ./rmate [arguments] file-path
 
-_rmate_ takes a file as last argument. This argument is always required.
+Read text from stdin
 
-### Optional parameters
+    $ echo "hello TextMate" | ./rmate [arguments] -
+
+### Arguments
 
     -H  connect to host (default: localhost)
     -p  port number to use for connection (default: 52698)
