@@ -183,7 +183,7 @@ fi
 
 if [ "$filepath" != "-" ]; then
     realpath=`canonicalize "$filepath"`
-    echo $realpath
+    log $realpath
 
     if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
         if [[ $force = false ]]; then
@@ -198,8 +198,6 @@ if [ "$filepath" != "-" ]; then
         displayname="$hostname:$filepath"
     fi
 else
-    echo "Reading from stdin"
-    log "Reading from stdin"
     displayname="$hostname:untitled"
 fi
 
@@ -298,6 +296,12 @@ if [ "$filepath" != "-" ] && [ -f "$filepath" ]; then
     echo "data: $filesize" 1>&3
     cat "$realpath" 1>&3
 elif [ "$filepath" = "-" ]; then
+    if [ -t 0 ]; then
+        echo "Reading from stdin, press ^D to stop"
+    else
+        log "Reading from stdin"
+    else
+
     data=$(cat)
     filesize=$(echo -e "$data" | wc -c)
     echo "data: $filesize" 1>&3
