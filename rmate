@@ -300,7 +300,7 @@ elif [ "$filepath" = "-" ]; then
         echo "Reading from stdin, press ^D to stop"
     else
         log "Reading from stdin"
-    else
+    fi
 
     data=$(cat)
     filesize=$(echo -e "$data" | wc -c)
