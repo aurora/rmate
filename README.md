@@ -54,15 +54,17 @@ Read text from stdin
 
 ### Arguments
 
-    -H  connect to host (default: localhost)
-    -p  port number to use for connection (default: 52698)
-    -w  wait for file to be closed by TextMate
-    -l  place caret on line number after loading file
-    -m  the display name shown in TextMate
-    -t  treat file as having specified type
-    -f  open even if file is not writable
-    -v  verbose logging messages
-    -h  display this usage information
+    -H, --host HOST  Connect to HOST. Use 'auto' to detect the host from SSH.
+    -p, --port PORT  Port number to use for connection.
+    -w, --[no-]wait  Wait for file to be closed by TextMate.
+    -l, --line LINE  Place caret on line number after loading file.
+    -m, --name NAME  The display name shown in TextMate.
+    -t, --type TYPE  Treat file as having specified type.
+    -f, --force      Open even if file is not writable.
+    -v, --verbose    Verbose logging messages.
+    -h, --help       Display this usage information.
+        --version    Show version and exit.
+
 
 ### Default parameter configuration
 
