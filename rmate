@@ -33,6 +33,9 @@
 
 # init
 #
+version="0.9.0"
+version_date="2014-09-02"
+version_string="rmate-sh $version ($version_date)"
 
 # determine hostname
 function hostname_command(){
@@ -99,15 +102,17 @@ function showusage {
     echo "usage: $(basename $0) [arguments] file-path  edit specified file
    or: $(basename $0) [arguments] -          read text from stdin
 
--H  connect to host (default: $host)
--p  port number to use for connection (default: $port)
--w  wait for file to be closed by TextMate
--l  place caret on line number after loading file
--m  the display name shown in TextMate
--t  treat file as having specified type
--f  open even if file is not writable
--v  verbose logging messages
--h  display this usage information
+-H, --host HOST  Connect to HOST. Use 'auto' to detect the host from
+                 SSH. Defaults to $host.
+-p, --port PORT  Port number to use for connection. Defaults to $port.
+-w, --[no-]wait  Wait for file to be closed by TextMate.
+-l, --line LINE  Place caret on line number after loading file.
+-m, --name NAME  The display name shown in TextMate.
+-t, --type TYPE  Treat file as having specified type.
+-f, --force      Open even if file is not writable.
+-v, --verbose    Verbose logging messages.
+-h, --help       Display this usage information.
+    --version    Show version and exit.
 "
 }
 
@@ -138,37 +143,57 @@ function canonicalize {
     echo $result
 }
 
-while getopts H:p:wl:m:t:fvh OPTIONS; do
-    case $OPTIONS in
-        H)
-            host=$OPTARG;;
-        p)
-            port=$OPTARG;;
-        w)
-            nowait=false;;
-        l)
-            selection=$OPTARG;;
-        m)
-            displayname=$OPTARG;;
-        t)
-            filetype=$OPTARG;;
-        f)
-            force=true;;
-        v)
-            verbose=true;;
-        h)
+while test "${1:0:1}" = "-"; do
+    case $1 in
+        -H|--host)
+            host=$2
+            shift
+            ;;
+        -p|--port)
+            port=$2
+            shift
+            ;;
+        -w|--wait)
+            nowait=false
+            ;;
+        --no-wait)
+            nowait=true
+            ;;
+        -l|--line)
+            selection=$2
+            shift
+            ;;
+        -m|--name)
+            displayname=$2
+            shift
+            ;;
+        -t|--type)
+            filetype=$2
+            shift
+            ;;
+        -f|--force)
+            force=true
+            ;;
+        -v|--verbose)
+            verbose=true
+            ;;
+        --version)
+            echo $version_string
+            exit 1
+            ;;
+        -h|-\?|--help)
             showusage
-            exit 1;;
-        ?)
-            showusage
-            exit 1;;
+            exit 1
+            ;;
         *)
             showusage
-            exit 1;;
+            exit 1
+            ;;
     esac
+    
+    shift
 done
 
-shift $((${OPTIND}-1))
 filepath="$1"
 
 if [ "$filepath" = "" ]; then
