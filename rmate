@@ -282,7 +282,7 @@ function handle_connection {
         elif [[ "$cmd" = "save" ]]; then
             log "Saving $token"
             if [ "$token" != "-" ]; then
-                cat "$tmp" >  "$token"
+                cat "$tmp" > "$token"
             fi
             rm "$tmp"
         fi
