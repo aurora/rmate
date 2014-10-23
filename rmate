@@ -212,6 +212,11 @@ fi
 if [ "$filepath" != "-" ]; then
     realpath=`canonicalize "$filepath"`
     log $realpath
+    
+    if [ -d "$filepath" ]; then
+        echo "$filepath is a directory and rmate is unable to handle directories."
+        exit 1
+    fi
 
     if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
         if [[ $force = false ]]; then
