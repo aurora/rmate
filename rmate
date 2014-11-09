@@ -325,7 +325,7 @@ if [ "$filetype" != "" ]; then
 fi
 
 if [ "$filepath" != "-" ] && [ -f "$filepath" ]; then
-    filesize=`ls -lL "$realpath" | awk '{print $5}'`
+    filesize=`ls -lLn "$realpath" | awk '{print $5}'`
     echo "data: $filesize" 1>&3
     cat "$realpath" 1>&3
 elif [ "$filepath" = "-" ]; then
