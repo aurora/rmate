@@ -5,7 +5,7 @@
 TextMate 2 adds a nice feature, where it is possible to edit files on a remote server
 using a helper script. The original helper script provided with TM2 is implemented in
 ruby. Here is my attempt to replace this ruby script with a shell script, because in 
-some cases a ruby installation might just be to much overhead for just editing remote
+some cases a ruby installation might just be too much overhead for just editing remote
 files.
 
 The shell script needs to be copied to the server, you want to remote edit files, on.
