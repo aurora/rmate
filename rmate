@@ -123,7 +123,7 @@ function log {
 }
 
 function dirpath {
-  (cd `dirname $1` >/dev/null; pwd -P)
+    (cd `dirname $1` >/dev/null 2>/dev/null; pwd -P)
 }
 
 function canonicalize {
