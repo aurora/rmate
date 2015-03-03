@@ -193,7 +193,7 @@ while test "${1:0:1}" = "-"; do
             exit 1
             ;;
     esac
-    
+
     shift
 done
 
@@ -212,7 +212,7 @@ fi
 if [ "$filepath" != "-" ]; then
     realpath=`canonicalize "$filepath"`
     log $realpath
-    
+
     if [ -d "$filepath" ]; then
         echo "$filepath is a directory and rmate is unable to handle directories."
         exit 1
