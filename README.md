@@ -4,7 +4,7 @@
 
 TextMate 2 adds a nice feature, where it is possible to edit files on a remote server
 using a helper script. The original helper script provided with TM2 is implemented in
-ruby. Here is my attempt to replace this ruby script with a shell script, because in 
+ruby. Here is my attempt to replace this ruby script with a shell script, because in
 some cases a ruby installation might just be too much overhead for just editing remote
 files.
 
@@ -23,7 +23,7 @@ addition:
 If you are logged in on the remote system, you can now just execute
 
 	rmate test.txt
-	
+
 
 ### Remote clients
 
@@ -39,7 +39,7 @@ Example session: Editing html file located on an SGI o2: <https://github.com/aur
 
 ## Requirements
 
-A bash with compiled support for "/dev/tcp" is required. This is not the case on some 
+A bash with compiled support for "/dev/tcp" is required. This is not the case on some
 older linux distributions, like Ubuntu 9.x.
 
 ## Usage
@@ -68,9 +68,9 @@ Read text from stdin
 
 ### Default parameter configuration
 
-Some default parameters (_host_ and _port_) can be configured by defining them 
-as the environment variables `RMATE_HOST` and `RMATE_PORT` or by putting them 
-in a configuration file. The configuration files loaded are `/etc/rmate.rc` 
+Some default parameters (_host_ and _port_) can be configured by defining them
+as the environment variables `RMATE_HOST` and `RMATE_PORT` or by putting them
+in a configuration file. The configuration files loaded are `/etc/rmate.rc`
 and `~/.rmate.rc`, e.g.:
 
     host: auto  # prefer host from SSH_CONNECTION over localhost
@@ -85,8 +85,9 @@ The precedence for setting the configuration is (higher precedence counts):
 
 1. default (localhost, 52698)
 2. /etc/rmate.rc
-3. ~/.rmate.rc
-4. environment variables (RMATE\_HOST, RMATE\_PORT)
+3. ~/.rmate/rmate.rc
+4. ~/.rmate.rc
+5. environment variables (RMATE\_HOST, RMATE\_PORT)
 
 ## Disclaimer
 
@@ -97,7 +98,7 @@ any damage the software may cause to your system or files.
 
 rmate
 
-Copyright (C) 2011-2014 by Harald Lapp <harald@octris.org>
+Copyright (C) 2011-2015 by Harald Lapp <harald@octris.org>
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
