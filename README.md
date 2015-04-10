@@ -60,6 +60,7 @@ Read text from stdin
     -l, --line LINE  Place caret on line number after loading file.
     -m, --name NAME  The display name shown in TextMate.
     -t, --type TYPE  Treat file as having specified type.
+    -n, --new        Open in a new window (Sublime Text).
     -f, --force      Open even if file is not writable.
     -v, --verbose    Verbose logging messages.
     -h, --help       Display this usage information.
