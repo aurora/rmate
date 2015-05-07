@@ -1,37 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
     <title>Rmate by aurora</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
+
+    <header>
+      <div class="container">
         <h1>Rmate</h1>
-        <p>Remote TextMate 2 implemented as shell script</p>
-        <p class="view"><a href="https://github.com/aurora/rmate">View the Project on GitHub <small>aurora/rmate</small></a></p>
-        <ul>
-          <li><a href="https://github.com/aurora/rmate/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/aurora/rmate/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/aurora/rmate">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
+        <h2>Remote TextMate 2 implemented as shell script</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/aurora/rmate/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/aurora/rmate/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/aurora/rmate" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
         <h1>
-<a name="rmate" class="anchor" href="#rmate"><span class="octicon octicon-link"></span></a>rmate</h1>
+<a id="rmate" class="anchor" href="#rmate" aria-hidden="true"><span class="octicon octicon-link"></span></a>rmate</h1>
 
 <h2>
-<a name="description" class="anchor" href="#description"><span class="octicon octicon-link"></span></a>Description</h2>
+<a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h2>
 
 <p>TextMate 2 adds a nice feature, where it is possible to edit files on a remote server
 using a helper script. The original helper script provided with TM2 is implemented in
@@ -44,7 +45,7 @@ After that, open your TM2 preferences and enable "Allow rmate connections" setti
 the "Terminal" settings and adjust the setting "Access for" according to your needs:</p>
 
 <h3>
-<a name="local-clients" class="anchor" href="#local-clients"><span class="octicon octicon-link"></span></a>Local clients</h3>
+<a id="local-clients" class="anchor" href="#local-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Local clients</h3>
 
 <p>It's a good idea to allow access only for local clients. In this case you need to open
 a SSH connection to the system you want to edit a file on and specify a remote tunnel in
@@ -59,7 +60,7 @@ addition:</p>
 </code></pre>
 
 <h3>
-<a name="remote-clients" class="anchor" href="#remote-clients"><span class="octicon octicon-link"></span></a>Remote clients</h3>
+<a id="remote-clients" class="anchor" href="#remote-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Remote clients</h3>
 
 <p>On some machines, where port forwarding is not possible, for example due to a missing ssh
 daemon, you can allow access for "remote clients". Just ssh or telnet to the remote machine
@@ -69,29 +70,29 @@ and execute:</p>
 </code></pre>
 
 <h3>
-<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h3>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
 
 <p>Example session: Editing html file located on an SGI o2: <a href="https://github.com/aurora/rmate/wiki/Screens">https://github.com/aurora/rmate/wiki/Screens</a></p>
 
 <h2>
-<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
 <p>A bash with compiled support for "/dev/tcp" is required. This is not the case on some 
 older linux distributions, like Ubuntu 9.x.</p>
 
 <h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <pre><code>$ ./rmate [-H host-name] [-p port-number] [-w] [-l line-number] [-m display-name] [-t file-type] [-f] [-v] file-path
 </code></pre>
 
 <h3>
-<a name="required-parameters" class="anchor" href="#required-parameters"><span class="octicon octicon-link"></span></a>Required parameters</h3>
+<a id="required-parameters" class="anchor" href="#required-parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Required parameters</h3>
 
 <p><em>rmate</em> takes a file as last argument. This argument is always required.</p>
 
 <h3>
-<a name="optional-parameters" class="anchor" href="#optional-parameters"><span class="octicon octicon-link"></span></a>Optional parameters</h3>
+<a id="optional-parameters" class="anchor" href="#optional-parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Optional parameters</h3>
 
 <pre><code>-H  connect to host (default: localhost)
 -p  port number to use for connection (default: 52698)
@@ -105,7 +106,7 @@ older linux distributions, like Ubuntu 9.x.</p>
 </code></pre>
 
 <h3>
-<a name="default-parameter-configuration" class="anchor" href="#default-parameter-configuration"><span class="octicon octicon-link"></span></a>Default parameter configuration</h3>
+<a id="default-parameter-configuration" class="anchor" href="#default-parameter-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Default parameter configuration</h3>
 
 <p>Some default parameters (<em>host</em> and <em>port</em>) can be configured by defining them 
 as the environment variables <code>RMATE_HOST</code> and <code>RMATE_PORT</code> or by putting them 
@@ -123,14 +124,16 @@ port: 52698
 <li>/etc/rmate.rc</li>
 <li>~/.rmate.rc</li>
 <li>environment variables (RMATE_HOST, RMATE_PORT)</li>
-</ol><h2>
-<a name="disclaimer" class="anchor" href="#disclaimer"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
+</ol>
+
+<h2>
+<a id="disclaimer" class="anchor" href="#disclaimer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
 
 <p>Use with caution. This software may contain serious bugs. I can not be made responsible for
 any damage the software may cause to your system or files.</p>
 
 <h2>
-<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>rmate</p>
 
@@ -143,11 +146,7 @@ any damage the software may cause to your system or files.</p>
 <p>You should have received a copy of the GNU General Public License along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
       </section>
     </div>
-    <footer>
-      <p>Project maintained by <a href="https://github.com/aurora">aurora</a></p>
-      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
-    </footer>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
     
   </body>
 </html>
