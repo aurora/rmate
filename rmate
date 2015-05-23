@@ -289,14 +289,14 @@ function handle_connection {
         if [[ "$cmd" = "close" ]]; then
             log "Closing $token"
             if [[ "$token" == "-" ]]; then
-              echo -n "$CONTENT"
+                echo -n "$CONTENT"
             fi
         elif [[ "$cmd" = "save" ]]; then
             log "Saving $token"
             if [ "$token" != "-" ]; then
                 cat "$tmp" > "$token"
             else
-              CONTENT=`cat "$tmp"`
+                CONTENT=`cat "$tmp"`
             fi
             rm "$tmp"
         fi
