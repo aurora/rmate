@@ -210,7 +210,7 @@ fi
 
 shift
 if [ ! "${#@}" -eq 0 ]; then
-    echo "There are more than one files specified. Opening only $filepath and ignoring other."
+    echo "There is more than one file specified. Opening only $filepath and ignoring other."
 fi
 
 if [ "$filepath" != "-" ]; then
