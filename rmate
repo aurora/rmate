@@ -204,8 +204,19 @@ done
 filepath="$1"
 
 if [ "$filepath" = "" ]; then
-    showusage
-    exit 1
+    if [[ $nowait = false ]]; then
+        filepath='-'
+    else
+        case "$-" in
+            *i*)
+                showusage
+                exit 1
+                ;;
+            *)
+                filepath='-'
+                ;;
+        esac
+    fi
 fi
 
 shift
