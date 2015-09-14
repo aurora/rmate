@@ -83,9 +83,6 @@ done
 host="${RMATE_HOST:-$host}"
 port="${RMATE_PORT:-$port}"
 
-if [[ "$host" = "auto" && "$SSH_CONNECTION" != "" ]]; then
-    host=${SSH_CONNECTION%% *}
-fi
 
 # misc initialization
 filepath=""
@@ -200,6 +197,11 @@ while test "${1:0:1}" = "-"; do
 
     shift
 done
+
+if [[ "$host" = "auto" && "$SSH_CONNECTION" != "" ]]; then
+    host=${SSH_CONNECTION%% *}
+fi
+
 
 filepath="$1"
 
