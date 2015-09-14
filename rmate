@@ -33,8 +33,8 @@
 
 # init
 #
-version="0.9.5"
-version_date="2015-05-24"
+version="0.9.6"
+version_date="2015-09-15"
 version_string="rmate-sh $version ($version_date)"
 
 # determine hostname
@@ -201,7 +201,6 @@ done
 if [[ "$host" = "auto" && "$SSH_CONNECTION" != "" ]]; then
     host=${SSH_CONNECTION%% *}
 fi
-
 
 filepath="$1"
 
