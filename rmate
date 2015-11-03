@@ -361,9 +361,9 @@ elif [ "$filepath" = "-" ]; then
     fi
 
     data=$(cat)
-    filesize=$(echo -e "$data" | wc -c)
+    filesize=$(echo -ne "$data" | wc -c)
     echo "data: $filesize" 1>&3
-    echo "$data" 1>&3
+    echo -n "$data" 1>&3
 else
     echo "data: 0" 1>&3
 fi
