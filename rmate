@@ -85,10 +85,7 @@ port="${RMATE_PORT:-$port}"
 
 
 # misc initialization
-filepath=""
-selection=""
-displayname=""
-filetype=""
+filepaths=""
 verbose=false
 nowait=true
 force=false
@@ -202,11 +199,11 @@ if [[ "$host" = "auto" && "$SSH_CONNECTION" != "" ]]; then
     host=${SSH_CONNECTION%% *}
 fi
 
-filepath="$1"
+filepaths=("$@")
 
-if [ "$filepath" = "" ]; then
+if [ "$filepaths" = "" ]; then
     if [[ $nowait = false ]]; then
-        filepath='-'
+        filepaths='-'
     else
         case "$-" in
             *i*)
@@ -214,45 +211,89 @@ if [ "$filepath" = "" ]; then
                 exit 1
                 ;;
             *)
-                filepath='-'
+                filepaths='-'
                 ;;
         esac
     fi
 fi
 
-shift
-if [ ! "${#@}" -eq 0 ]; then
-    echo "There is more than one file specified. Opening only $filepath and ignoring other."
-fi
-
-if [ "$filepath" != "-" ]; then
-    realpath=`canonicalize "$filepath"`
-    log $realpath
-
-    if [ -d "$filepath" ]; then
-        echo "$filepath is a directory and rmate is unable to handle directories."
-        exit 1
-    fi
-
-    if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
-        if [[ $force = false ]]; then
-            echo "File $filepath is not writable! Use -f to open anyway."
-            exit 1
-        elif [[ $verbose = true ]]; then
-            log "File $filepath is not writable! Opening anyway."
-        fi
-    fi
-
-    if [ "$displayname" = "" ]; then
-        displayname="$hostname:$filepath"
-    fi
-else
-    displayname="$hostname:untitled"
-fi
 
 #------------------------------------------------------------
 # main
 #------------------------------------------------------------
+
+function open_file {
+
+    filepath="$1"
+
+    if [ "$filepath" != "-" ]; then
+        realpath=`canonicalize "$filepath"`
+        log $realpath
+
+        if [ -d "$filepath" ]; then
+            echo "$filepath is a directory and rmate is unable to handle directories."
+            exit 1
+        fi
+
+        if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
+            if [[ $force = false ]]; then
+                echo "File $filepath is not writable! Use -f to open anyway."
+                exit 1
+            elif [[ $verbose = true ]]; then
+                log "File $filepath is not writable! Opening anyway."
+            fi
+        fi
+
+        if [ "$displayname" = "" ]; then
+            displayname="$hostname:$filepath"
+        fi
+    else
+        displayname="$hostname:untitled"
+    fi
+
+    echo "open" 1>&3
+    echo "display-name: $displayname" 1>&3
+    echo "real-path: $realpath" 1>&3
+    echo "data-on-save: yes" 1>&3
+    echo "re-activate: yes" 1>&3
+    echo "token: $filepath" 1>&3
+
+    if [[ $new = true ]]; then
+        echo "new: yes"  1>&3
+    fi
+
+    if [ "$selection" != "" ]; then
+        echo "selection: $selection" 1>&3
+    fi
+
+    if [ "$filetype" != "" ]; then
+        echo "file-type: $filetype" 1>&3
+    fi
+
+    if [ "$filepath" != "-" ] && [ -f "$filepath" ]; then
+        filesize=`ls -lLn "$realpath" | awk '{print $5}'`
+        echo "data: $filesize" 1>&3
+        cat "$realpath" 1>&3
+    elif [ "$filepath" = "-" ]; then
+        if [ -t 0 ]; then
+            echo "Reading from stdin, press ^D to stop"
+        else
+            log "Reading from stdin"
+        fi
+
+        # preserve trailing newlines
+        data=`cat; echo x`
+        data=${data%x}
+        filesize=$(echo -ne "$data" | wc -c)
+        echo "data: $filesize" 1>&3
+        echo -n "$data" 1>&3
+    else
+        echo "data: 0" 1>&3
+    fi
+
+    echo 1>&3
+}
+
 function handle_connection {
     local cmd
     local name
@@ -330,47 +371,10 @@ read server_info 0<&3
 
 log $server_info
 
-echo "open" 1>&3
-echo "display-name: $displayname" 1>&3
-echo "real-path: $realpath" 1>&3
-echo "data-on-save: yes" 1>&3
-echo "re-activate: yes" 1>&3
-echo "token: $filepath" 1>&3
+for file in "${filepaths[@]}"; do
+    open_file "$file"
+done
 
-if [[ $new = true ]]; then
-    echo "new: yes"  1>&3
-fi
-
-if [ "$selection" != "" ]; then
-    echo "selection: $selection" 1>&3
-fi
-
-if [ "$filetype" != "" ]; then
-    echo "file-type: $filetype" 1>&3
-fi
-
-if [ "$filepath" != "-" ] && [ -f "$filepath" ]; then
-    filesize=`ls -lLn "$realpath" | awk '{print $5}'`
-    echo "data: $filesize" 1>&3
-    cat "$realpath" 1>&3
-elif [ "$filepath" = "-" ]; then
-    if [ -t 0 ]; then
-        echo "Reading from stdin, press ^D to stop"
-    else
-        log "Reading from stdin"
-    fi
-
-    # preserve trailing newlines
-    data=`cat; echo x`
-    data=${data%x}
-    filesize=$(echo -ne "$data" | wc -c)
-    echo "data: $filesize" 1>&3
-    echo -n "$data" 1>&3
-else
-    echo "data: 0" 1>&3
-fi
-
-echo 1>&3
 echo "." 1>&3
 
 if [[ $nowait = true ]]; then
