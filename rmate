@@ -85,7 +85,10 @@ port="${RMATE_PORT:-$port}"
 
 
 # misc initialization
-filepaths=""
+filepaths=()
+displaynames=()
+selections=()
+filetypes=()
 verbose=false
 nowait=true
 force=false
@@ -158,15 +161,15 @@ while test "${1:0:1}" = "-"; do
             nowait=true
             ;;
         -l|--line)
-            selection=$2
+            selections+=($2)
             shift
             ;;
         -m|--name)
-            displayname=$2
+            displaynames+=($2)
             shift
             ;;
         -t|--type)
-            filetype=$2
+            filetypes+=($2)
             shift
             ;;
         -n|--new)
@@ -224,7 +227,11 @@ fi
 
 function open_file {
 
-    filepath="$1"
+    index="$1"
+    filepath="${filepaths[$index]}"
+    selection="${selections[$index]}"
+    filetype="${filetypes[$index]}"
+    displayname="${displaynames[$index]}"
 
     if [ "$filepath" != "-" ]; then
         realpath=`canonicalize "$filepath"`
@@ -371,8 +378,8 @@ read server_info 0<&3
 
 log $server_info
 
-for file in "${filepaths[@]}"; do
-    open_file "$file"
+for i in "${!filepaths[@]}"; do
+    open_file "$i"
 done
 
 echo "." 1>&3
