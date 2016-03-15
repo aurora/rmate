@@ -58,6 +58,7 @@ Read text from stdin
     -p, --port PORT  Port number to use for connection.
     -w, --[no-]wait  Wait for file to be closed by TextMate.
     -l, --line LINE  Place caret on line number after loading file.
+    +N               Alias for --line, if N is a number (eg.: +5).
     -m, --name NAME  The display name shown in TextMate.
     -t, --type TYPE  Treat file as having specified type.
     -n, --new        Open in a new window (Sublime Text).
@@ -99,7 +100,7 @@ any damage the software may cause to your system or files.
 
 rmate
 
-Copyright (C) 2011-2015 by Harald Lapp <harald@octris.org>
+Copyright (C) 2011-2016 by Harald Lapp <harald@octris.org>
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # rmate
-# Copyright (C) 2011-2015 by Harald Lapp <harald@octris.org>
+# Copyright (C) 2011-2016 by Harald Lapp <harald@octris.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -104,6 +104,7 @@ function showusage {
 -p, --port PORT  Port number to use for connection. Defaults to $port.
 -w, --[no-]wait  Wait for file to be closed by TextMate.
 -l, --line LINE  Place caret on line number after loading file.
++N               Alias for --line, if N is a number (eg.: +5).
 -m, --name NAME  The display name shown in TextMate.
 -t, --type TYPE  Treat file as having specified type.
 -n, --new        Open in a new window (Sublime Text).
@@ -141,7 +142,7 @@ function canonicalize {
     echo $result
 }
 
-while test "${1:0:1}" = "-"; do
+while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
     case $1 in
         -)
             break
@@ -188,6 +189,9 @@ while test "${1:0:1}" = "-"; do
         -h|-\?|--help)
             showusage
             exit 1
+            ;;
+        +[0-9]*)
+            selection=${1:1}
             ;;
         *)
             showusage
