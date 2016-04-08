@@ -56,7 +56,11 @@ hostname=$($(hostname_command))
 
 # default configuration
 host=localhost
-port=52698
+if [ -f "$(getent passwd "$(logname)" | cut -d: -f6)/.rsub" ];then
+  port="$(cat $(getent passwd "$(logname)" | cut -d: -f6)/.rsub |grep '^port'|cut -d '=' -f2|tr -d '[:space:]')"
+else
+  port=52698
+fi
 
 function load_config {
     local rc_file=$1
