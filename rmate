@@ -57,6 +57,7 @@ hostname=$($(hostname_command))
 # default configuration
 host=localhost
 port=52698
+eval home=$(builtin printf "~%q" "${SUDO_USER:-$LOGNAME}")
 
 function load_config {
     local rc_file=$1
@@ -76,7 +77,7 @@ function load_config {
     fi
 }
 
-for i in "/etc/${0##*/}" ~/."${0##*/}/${0##*/}.rc" ~/."${0##*/}.rc"; do
+for i in "/etc/${0##*/}" $home/."${0##*/}/${0##*/}.rc" $home/."${0##*/}.rc"; do
     load_config $i
 done
 
