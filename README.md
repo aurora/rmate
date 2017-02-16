@@ -15,7 +15,7 @@ the "Terminal" settings and adjust the setting "Access for" according to your ne
 ### Quick install
 ```bash
 sudo wget -O /usr/local/bin/rmate https://raw.github.com/aurora/rmate/master/rmate
-sudo chmod a+x /usr/local/bin/rsub
+sudo chmod a+x /usr/local/bin/rmate
 ```
 
 
