@@ -12,6 +12,13 @@ The shell script needs to be copied to the server, you want to remote edit files
 After that, open your TM2 preferences and enable "Allow rmate connections" setting in
 the "Terminal" settings and adjust the setting "Access for" according to your needs:
 
+### Quick install
+```bash
+sudo wget -O /usr/local/bin/rmate https://raw.github.com/aurora/rmate/master/rmate
+sudo chmod a+x /usr/local/bin/rmate
+```
+
+
 ### Local clients
 
 It's a good idea to allow access only for local clients. In this case you need to open
