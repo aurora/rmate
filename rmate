@@ -235,7 +235,16 @@ if [ "$filepath" != "-" ]; then
     log $realpath
 
     if [ -d "$filepath" ]; then
-        echo "$filepath is a directory and rmate is unable to handle directories."
+        for dir in `ls $filepath` ; do
+            output=`$0 "$filepath/$dir"`
+            if [[ -n "$output"  &&  $verbose  == true ]]; then
+                echo $output
+            fi
+        done;
+
+        if [ $verbose == true ]; then
+            echo "$filepath is a directory and were handled."
+        fi
         exit 1
     fi
 
