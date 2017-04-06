@@ -57,7 +57,7 @@ hostname=$($(hostname_command))
 # default configuration
 host=localhost
 port=52698
-eval home=$(builtin printf "~%q" "${SUDO_USER:-$LOGNAME}")
+eval home="$(builtin printf "~%q" "${SUDO_USER:-$LOGNAME}")"
 
 function load_config {
     local rc_file=$1
@@ -78,7 +78,7 @@ function load_config {
 }
 
 for i in "/etc/${0##*/}" $home/."${0##*/}/${0##*/}.rc" $home/."${0##*/}.rc"; do
-    load_config $i
+    load_config "$i"
 done
 
 host="${RMATE_HOST:-$host}"
@@ -97,8 +97,8 @@ force=false
 # process command-line parameters
 #
 function showusage {
-    echo "usage: $(basename $0) [arguments] file-path  edit specified file
-   or: $(basename $0) [arguments] -          read text from stdin
+    echo "usage: $(basename "$0") [arguments] file-path  edit specified file
+   or: $(basename "$0") [arguments] -          read text from stdin
 
 -H, --host HOST  Connect to HOST. Use 'auto' to detect the host from
                  SSH. Defaults to $host.
@@ -123,24 +123,24 @@ function log {
 }
 
 function dirpath {
-    (cd `dirname $1` >/dev/null 2>/dev/null; pwd -P)
+    (cd `dirname "$1"` >/dev/null 2>/dev/null; pwd -P)
 }
 
 function canonicalize {
     filepath="$1"
     dir=`dirpath "$filepath"`
     if [ -L "$filepath" ]; then
-        relativepath=`cd "$dir"; readlink \`basename "$filepath"\``
+        relativepath=`cd "$dir"; readlink "\`basename "$filepath"\`"`
         result=`dirpath "$relativepath"`/`basename "$relativepath"`
     else
-        result=`basename "$filepath"`
+        result="`basename "$filepath"`"
         if [ "$dir" = '/' ]; then
             result="$dir$result"
         else
             result="$dir/$result"
         fi
     fi
-    echo $result
+    echo "$result"
 }
 
 while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
@@ -184,7 +184,7 @@ while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
             verbose=true
             ;;
         --version)
-            echo $version_string
+            echo "$version_string"
             exit 1
             ;;
         -h|-\?|--help)
@@ -240,7 +240,7 @@ function open_file {
 
     if [ "$filepath" != "-" ]; then
         realpath=`canonicalize "$filepath"`
-        log $realpath
+        log "$realpath"
 
         if [ -d "$filepath" ]; then
             echo "$filepath is a directory and rmate is unable to handle directories."
@@ -344,7 +344,7 @@ function handle_connection {
                         touch "$tmp"
                     fi
 
-                    dd bs=1 count=$value <&3 >>"$tmp" 2>/dev/null
+                    dd bs=1 count="$value" <&3 >>"$tmp" 2>/dev/null
                     ;;
                 *)
                     ;;
@@ -372,7 +372,7 @@ function handle_connection {
 
 # connect to textmate and send command
 #
-exec 3<> /dev/tcp/$host/$port
+exec 3<> "/dev/tcp/$host/$port"
 
 if [ $? -gt 0 ]; then
     echo "Unable to connect to TextMate on $host:$port"
@@ -381,7 +381,7 @@ fi
 
 read server_info 0<&3
 
-log $server_info
+log "$server_info"
 
 for i in "${!filepaths[@]}"; do
     open_file "$i"
