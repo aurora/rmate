@@ -67,7 +67,7 @@ function load_config {
     local port_pattern="^port(:[[:space:]]+|=)([0-9]+)"
 
     if [ -f "$rc_file" ]; then
-        while read row; do
+        while read -r row; do
             if [[ "$row" =~ $host_pattern ]]; then
                 host=${BASH_REMATCH[2]}
             elif [[ "$row" =~ $port_pattern ]]; then
@@ -313,7 +313,7 @@ function handle_connection {
     local token
     local tmp
 
-    while read 0<&3; do
+    while read -r 0<&3; do
         REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
         REPLY="${REPLY%"${REPLY##*[![:space:]]}"}"
 
@@ -322,7 +322,7 @@ function handle_connection {
         token=""
         tmp=""
 
-        while read 0<&3; do
+        while read -r 0<&3; do
             REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
             REPLY="${REPLY%"${REPLY##*[![:space:]]}"}"
 
@@ -379,7 +379,7 @@ if [ $? -gt 0 ]; then
     exit 1
 fi
 
-read server_info 0<&3
+read -r server_info 0<&3
 
 log "$server_info"
 
