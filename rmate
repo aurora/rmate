@@ -209,7 +209,7 @@ fi
 
 filepaths=("$@")
 
-if [ "${filepaths[@]}" = "" ]; then
+if [ "${filepaths[*]}" = "" ]; then
     if [[ $nowait = false ]]; then
         filepaths=('-')
     else
