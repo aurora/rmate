@@ -131,7 +131,7 @@ function canonicalize {
     dir="$(dirpath "$filepath")"
     if [ -L "$filepath" ]; then
         relativepath="$(cd "$dir" || { echo "unable to cd to $dir" 1>&2; exit; } ; readlink "$(basename "$filepath")")"
-        result=`dirpath "$relativepath"`/`basename "$relativepath"`
+        result="$(dirpath "$relativepath/$(basename "$relativepath")")"
     else
         result="$(basename "$filepath")"
         if [ "$dir" = '/' ]; then
