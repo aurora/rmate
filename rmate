@@ -148,6 +148,10 @@ while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
         -)
             break
             ;;
+        --)
+            shift
+            break
+            ;;
         -H|--host)
             host=$2
             shift
