@@ -123,11 +123,16 @@ function log {
 }
 
 function dirpath {
-    (cd `dirname $1` >/dev/null 2>/dev/null; pwd -P)
+    (cd `dirname "$1"` >/dev/null 2>/dev/null; pwd -P)
 }
 
 function canonicalize {
     filepath="$1"
+
+   if [[ "${filepath:0:1}" = "-" ]]; then
+       filepath="./$filepath"
+   fi
+
     dir=`dirpath "$filepath"`
     if [ -L "$filepath" ]; then
         relativepath=`cd "$dir"; readlink \`basename "$filepath"\``
@@ -146,6 +151,10 @@ function canonicalize {
 while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
     case $1 in
         -)
+            break
+            ;;
+        --)
+            shift
             break
             ;;
         -H|--host)
