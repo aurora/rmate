@@ -218,9 +218,9 @@ fi
 
 filepaths=("$@")
 
-if [ "$filepaths" = "" ]; then
+if [ "${filepaths[*]}" = "" ]; then
     if [[ $nowait = false ]]; then
-        filepaths='-'
+        filepaths=('-')
     else
         case "$-" in
             *i*)
@@ -228,7 +228,7 @@ if [ "$filepaths" = "" ]; then
                 exit 1
                 ;;
             *)
-                filepaths='-'
+                filepaths=('-')
                 ;;
         esac
     fi
