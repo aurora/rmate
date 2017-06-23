@@ -145,7 +145,7 @@ function canonicalize {
             result="$dir/$result"
         fi
     fi
-    echo $result
+    echo "$result"
 }
 
 while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
@@ -193,7 +193,7 @@ while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
             verbose=true
             ;;
         --version)
-            echo $version_string
+            echo "$version_string"
             exit 1
             ;;
         -h|-\?|--help)
@@ -249,7 +249,7 @@ function open_file {
 
     if [ "$filepath" != "-" ]; then
         realpath=`canonicalize "$filepath"`
-        log $realpath
+        log "$realpath"
 
         if [ -d "$filepath" ]; then
             echo "$filepath is a directory and rmate is unable to handle directories."
@@ -381,7 +381,7 @@ function handle_connection {
 
 # connect to textmate and send command
 #
-exec 3<> /dev/tcp/$host/$port
+exec 3<> "/dev/tcp/$host/$port"
 
 if [ $? -gt 0 ]; then
     echo "Unable to connect to TextMate on $host:$port"
