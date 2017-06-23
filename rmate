@@ -123,7 +123,7 @@ function log {
 }
 
 function dirpath {
-    (cd `dirname "$1"` >/dev/null 2>/dev/null; pwd -P)
+    (cd "`dirname "$1"`" >/dev/null 2>/dev/null || { echo "unable to cd to $1 directory" 1>&2; exit; } ; pwd -P)
 }
 
 function canonicalize {
@@ -135,7 +135,7 @@ function canonicalize {
 
     dir=`dirpath "$filepath"`
     if [ -L "$filepath" ]; then
-        relativepath=`cd "$dir"; readlink \`basename "$filepath"\``
+        relativepath=`cd "$dir" || { echo "unable to cd to $dir" 1>&2; exit; } ; readlink "\`basename "$filepath"\`"`
         result=`dirpath "$relativepath"`/`basename "$relativepath"`
     else
         result=`basename "$filepath"`
