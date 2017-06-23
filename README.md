@@ -13,11 +13,17 @@ After that, open your TM2 preferences and enable "Allow rmate connections" setti
 the "Terminal" settings and adjust the setting "Access for" according to your needs:
 
 ### Quick install
+
 ```bash
 sudo wget -O /usr/local/bin/rmate https://raw.github.com/aurora/rmate/master/rmate
 sudo chmod a+x /usr/local/bin/rmate
 ```
 
+or with [bpkg](https://github.com/bpkg/bpkg)
+
+```bash
+bpkg install aurora/rmate
+```
 
 ### Local clients
 
