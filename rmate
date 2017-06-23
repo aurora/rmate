@@ -52,8 +52,6 @@ function hostname_command(){
     fi
 }
 
-# intent is to execute hostname command, so disable the warning
-# shellcheck disable=SC2091
 hostname=$($(hostname_command))
 
 # default configuration
@@ -79,8 +77,6 @@ function load_config {
     fi
 }
 
-# "home" is from earlier eval so disable warning about unassigned reference
-# shellcheck disable=SC2154
 for i in "/etc/${0##*/}" $home/."${0##*/}/${0##*/}.rc" $home/."${0##*/}.rc"; do
     load_config "$i"
 done
@@ -296,8 +292,6 @@ function open_file {
     fi
 
     if [ "$filepath" != "-" ] && [ -f "$filepath" ]; then
-        # ls is used to get filesize, so skip warning about find
-        # shellcheck disable=SC2012
         filesize=`ls -lLn "$realpath" | awk '{print $5}'`
         echo "data: $filesize" 1>&3
         cat "$realpath" 1>&3
@@ -389,8 +383,6 @@ function handle_connection {
 #
 exec 3<> "/dev/tcp/$host/$port"
 
-# checking return value of exec here is clearer; skip warning
-# shellcheck disable=SC2181
 if [ $? -gt 0 ]; then
     echo "Unable to connect to TextMate on $host:$port"
     exit 1
