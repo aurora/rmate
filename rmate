@@ -97,7 +97,7 @@ force=false
 # process command-line parameters
 #
 function showusage {
-    echo "usage: $(basename $0) [arguments] file-path  edit specified file
+    echo "usage: $(basename $0) [arguments] [--] file-path  edit specified file
    or: $(basename $0) [arguments] -          read text from stdin
 
 -H, --host HOST  Connect to HOST. Use 'auto' to detect the host from

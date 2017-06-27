@@ -59,7 +59,7 @@ older linux distributions, like Ubuntu 9.x.
 
 Edit specified file
 
-    $ ./rmate [arguments] file-path
+    $ ./rmate [arguments] [--] file-path
 
 Read text from stdin
 
