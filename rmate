@@ -129,9 +129,9 @@ function dirpath {
 function canonicalize {
     filepath="$1"
 
-   if [[ "${filepath:0:1}" = "-" ]]; then
-       filepath="./$filepath"
-   fi
+    if [[ "${filepath:0:1}" = "-" ]]; then
+        filepath="./$filepath"
+    fi
 
     dir=`dirpath "$filepath"`
     if [ -L "$filepath" ]; then
