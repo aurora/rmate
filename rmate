@@ -57,6 +57,7 @@ hostname=$($(hostname_command))
 # default configuration
 host=localhost
 port=52698
+unix=
 eval home=$(builtin printf "~%q" "${SUDO_USER:-$LOGNAME}")
 
 function load_config {
@@ -65,6 +66,7 @@ function load_config {
 
     local host_pattern="^host(:[[:space:]]+|=)([^ ]+)"
     local port_pattern="^port(:[[:space:]]+|=)([0-9]+)"
+    local unix_pattern="^unix(:[[:space:]]+|=)(.+)"
 
     if [ -f "$rc_file" ]; then
         while read -r row; do
@@ -72,6 +74,8 @@ function load_config {
                 host=${BASH_REMATCH[2]}
             elif [[ "$row" =~ $port_pattern ]]; then
                 port=${BASH_REMATCH[2]}
+            elif [[ "$row" =~ $unix_pattern ]]; then
+                unix=${BASH_REMATCH[2]}
             fi
         done < "$rc_file"
     fi
@@ -83,7 +87,7 @@ done
 
 host="${RMATE_HOST:-$host}"
 port="${RMATE_PORT:-$port}"
-
+unix="${RMATE_UNIX:-$unix}"
 
 # misc initialization
 filepaths=()
@@ -103,6 +107,7 @@ function showusage {
 -H, --host HOST  Connect to HOST. Use 'auto' to detect the host from
                  SSH. Defaults to $host.
 -p, --port PORT  Port number to use for connection. Defaults to $port.
+-u, --unix PATH  UNIX socket for connection. Overrides host/port.
 -w, --[no-]wait  Wait for file to be closed by TextMate.
 -l, --line LINE  Place caret on line number after loading file.
 +N               Alias for --line, if N is a number (eg.: +5).
@@ -163,6 +168,10 @@ while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
             ;;
         -p|--port)
             port=$2
+            shift
+            ;;
+        -u|--unix)
+            unix=$2
             shift
             ;;
         -w|--wait)
@@ -272,29 +281,29 @@ function open_file {
         displayname="$hostname:untitled"
     fi
 
-    echo "open" 1>&3
-    echo "display-name: $displayname" 1>&3
-    echo "real-path: $realpath" 1>&3
-    echo "data-on-save: yes" 1>&3
-    echo "re-activate: yes" 1>&3
-    echo "token: $filepath" 1>&3
+    echo "open" 1>&4
+    echo "display-name: $displayname" 1>&4
+    echo "real-path: $realpath" 1>&4
+    echo "data-on-save: yes" 1>&4
+    echo "re-activate: yes" 1>&4
+    echo "token: $filepath" 1>&4
 
     if [[ $new = true ]]; then
-        echo "new: yes"  1>&3
+        echo "new: yes"  1>&4
     fi
 
     if [ "$selection" != "" ]; then
-        echo "selection: $selection" 1>&3
+        echo "selection: $selection" 1>&4
     fi
 
     if [ "$filetype" != "" ]; then
-        echo "file-type: $filetype" 1>&3
+        echo "file-type: $filetype" 1>&4
     fi
 
     if [ "$filepath" != "-" ] && [ -f "$filepath" ]; then
         filesize=`ls -lLn "$realpath" | awk '{print $5}'`
-        echo "data: $filesize" 1>&3
-        cat "$realpath" 1>&3
+        echo "data: $filesize" 1>&4
+        cat "$realpath" 1>&4
     elif [ "$filepath" = "-" ]; then
         if [ -t 0 ]; then
             echo "Reading from stdin, press ^D to stop"
@@ -306,13 +315,13 @@ function open_file {
         data=`cat; echo x`
         data=${data%x}
         filesize=$(echo -ne "$data" | wc -c)
-        echo "data: $filesize" 1>&3
-        echo -n "$data" 1>&3
+        echo "data: $filesize" 1>&4
+        echo -n "$data" 1>&4
     else
-        echo "data: 0" 1>&3
+        echo "data: 0" 1>&4
     fi
 
-    echo 1>&3
+    echo 1>&4
 }
 
 function handle_connection {
@@ -381,11 +390,32 @@ function handle_connection {
 
 # connect to textmate and send command
 #
-exec 3<> "/dev/tcp/$host/$port"
+if [ -n "$unix" ] ; then
+    if [ ! -S "$unix" ] ; then
+        echo "$unix is not a socket!"
+        exit 1
+    fi
 
-if [ $? -gt 0 ]; then
-    echo "Unable to connect to TextMate on $host:$port"
-    exit 1
+    fifodir=$(mktemp -d) && \
+        mkfifo "$fifodir/in" "$fifodir/out" && \
+        ( (nc -U "$unix" < "$fifodir/in" > "$fifodir/out" &) &) && \
+        exec 4> "$fifodir/in" && \
+        exec 3< "$fifodir/out"
+
+    connect_status=$?
+
+    [ -d "$fifodir" ] && rm -rf "$fifodir"
+
+    if [ $connect_status -gt 0 ] ; then
+        echo "Unable to connect to TextMate on $unix"
+        exit 1
+    fi
+else
+    exec 3<> "/dev/tcp/$host/$port" && exec 4>&3
+    if [ $? -gt 0 ]; then
+        echo "Unable to connect to TextMate on $host:$port"
+        exit 1
+    fi
 fi
 
 read -r server_info 0<&3
@@ -396,7 +426,7 @@ for i in "${!filepaths[@]}"; do
     open_file "$i"
 done
 
-echo "." 1>&3
+echo "." 1>&4
 
 if [[ $nowait = true ]]; then
     exec </dev/null >/dev/null 2>/dev/null
