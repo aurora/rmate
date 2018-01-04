@@ -292,7 +292,7 @@ function open_file {
     fi
 
     if [ "$filepath" != "-" ] && [ -f "$filepath" ]; then
-        filesize=`ls -lLn "$realpath" | awk '{print $5}'`
+        filesize=$(($(wc -c <"$realpath")))
         echo "data: $filesize" 1>&3
         cat "$realpath" 1>&3
     elif [ "$filepath" = "-" ]; then
