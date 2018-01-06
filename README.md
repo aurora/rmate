@@ -15,8 +15,18 @@ the "Terminal" settings and adjust the setting "Access for" according to your ne
 ### Quick install
 
 ```bash
-sudo wget -O /usr/local/bin/rmate https://raw.github.com/aurora/rmate/master/rmate
-sudo chmod a+x /usr/local/bin/rmate
+target='/usr/local/bin/rmate';\
+url='https://raw.github.com/aurora/rmate/master/rmate';\
+sudo='';\
+[ $(which sudo) ] && sudo="sudo";\
+if [ $(which curl) ]; then \
+	$sudo curl -L "$url" > "$target";\
+elif [ $(which wget) ]; then \
+	$sudo wget -O "$target" "$url";\
+else \
+	echo '!!! curl/wget not found !!!'; \
+fi; \
+[ -e "$target" ] && $sudo chmod a+x "$target"
 ```
 
 or with [bpkg](https://github.com/bpkg/bpkg)
