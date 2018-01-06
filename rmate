@@ -301,7 +301,7 @@ function open_file {
     fi
 
     if [ "$filepath" != "-" ] && [ -f "$filepath" ]; then
-        filesize=`ls -lLn "$realpath" | awk '{print $5}'`
+        filesize=$(($(wc -c <"$realpath")))
         echo "data: $filesize" 1>&4
         cat "$realpath" 1>&4
     elif [ "$filepath" = "-" ]; then
@@ -314,7 +314,7 @@ function open_file {
         # preserve trailing newlines
         data=`cat; echo x`
         data=${data%x}
-        filesize=$(echo -ne "$data" | wc -c)
+        filesize=$(($(echo -ne "$data" | wc -c)))
         echo "data: $filesize" 1>&4
         echo -n "$data" 1>&4
     else
