@@ -326,6 +326,7 @@ function handle_connection {
     local value
     local token
     local tmp
+    local content
 
     while read -r 0<&3; do
         REPLY="${REPLY#"${REPLY%%[![:space:]]*}"}"
@@ -368,14 +369,14 @@ function handle_connection {
         if [[ "$cmd" = "close" ]]; then
             log "Closing $token"
             if [[ "$token" == "-" ]]; then
-                echo -n "$CONTENT"
+                echo -n "$content"
             fi
         elif [[ "$cmd" = "save" ]]; then
             log "Saving $token"
             if [ "$token" != "-" ]; then
                 cat "$tmp" > "$token"
             else
-                CONTENT=$(cat "$tmp")
+                content=$(cat "$tmp")
             fi
             rm "$tmp"
         fi
