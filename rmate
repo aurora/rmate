@@ -123,7 +123,7 @@ function log {
 }
 
 function dirpath {
-    (cd "`dirname "$1"`" >/dev/null 2>/dev/null || { echo "unable to cd to $1 directory" 1>&2; exit; } ; pwd -P)
+    (cd "$(dirname "$1")" >/dev/null 2>/dev/null || { echo "unable to cd to $1 directory" 1>&2; exit; } ; pwd -P)
 }
 
 function canonicalize {
@@ -133,12 +133,12 @@ function canonicalize {
         filepath="./$filepath"
     fi
 
-    dir=`dirpath "$filepath"`
+    dir=$(dirpath "$filepath")
     if [ -L "$filepath" ]; then
-        relativepath=`cd "$dir" || { echo "unable to cd to $dir" 1>&2; exit; } ; readlink "\`basename "$filepath"\`"`
-        result=`dirpath "$relativepath"`/`basename "$relativepath"`
+        relativepath=$(cd "$dir" || { echo "unable to cd to $dir" 1>&2; exit; } ; readlink "$(basename "$filepath")")
+        result=$(dirpath "$relativepath")/$(basename "$relativepath")
     else
-        result=`basename "$filepath"`
+        result=$(basename "$filepath")
         if [ "$dir" = '/' ]; then
             result="$dir$result"
         else
@@ -248,7 +248,7 @@ function open_file {
     displayname="${displaynames[$index]}"
 
     if [ "$filepath" != "-" ]; then
-        realpath=`canonicalize "$filepath"`
+        realpath=$(canonicalize "$filepath")
         log "$realpath"
 
         if [ -d "$filepath" ]; then
@@ -303,7 +303,7 @@ function open_file {
         fi
 
         # preserve trailing newlines
-        data=`cat; echo x`
+        data=$(cat; echo x)
         data=${data%x}
         filesize=$(($(echo -ne "$data" | wc -c)))
         echo "data: $filesize" 1>&3
@@ -370,7 +370,7 @@ function handle_connection {
             if [ "$token" != "-" ]; then
                 cat "$tmp" > "$token"
             else
-                CONTENT=`cat "$tmp"`
+                CONTENT=$(cat "$tmp")
             fi
             rm "$tmp"
         fi
