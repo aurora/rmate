@@ -127,13 +127,16 @@ function dirpath {
 }
 
 function canonicalize {
-    filepath="$1"
+    local filepath="$1"
+    local relativepath
+    local result
 
     if [[ "${filepath:0:1}" = "-" ]]; then
         filepath="./$filepath"
     fi
 
-    dir=$(dirpath "$filepath")
+    local dir=$(dirpath "$filepath")
+    
     if [ -L "$filepath" ]; then
         relativepath=$(cd "$dir" || { echo "unable to cd to $dir" 1>&2; exit; } ; readlink "$(basename "$filepath")")
         result=$(dirpath "$relativepath")/$(basename "$relativepath")
@@ -145,6 +148,7 @@ function canonicalize {
             result="$dir/$result"
         fi
     fi
+    
     echo "$result"
 }
 
@@ -240,12 +244,13 @@ fi
 #------------------------------------------------------------
 
 function open_file {
-
-    index="$1"
-    filepath="${filepaths[$index]}"
-    selection="${selections[$index]}"
-    filetype="${filetypes[$index]}"
-    displayname="${displaynames[$index]}"
+    local index="$1"
+    local filepath="${filepaths[$index]}"
+    local selection="${selections[$index]}"
+    local filetype="${filetypes[$index]}"
+    local displayname="${displaynames[$index]}"
+    local realpath
+    local data
 
     if [ "$filepath" != "-" ]; then
         realpath=$(canonicalize "$filepath")
