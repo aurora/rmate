@@ -90,9 +90,11 @@ filepaths=()
 displaynames=()
 selections=()
 filetypes=()
+maxfiles=20
 verbose=false
 nowait=true
 force=false
+maxdepth="-maxdepth 1"
 
 # process command-line parameters
 #
@@ -110,6 +112,7 @@ function showusage {
 -t, --type TYPE  Treat file as having specified type.
 -n, --new        Open in a new window (Sublime Text).
 -f, --force      Open even if file is not writable.
+-r, --recursive  Recursive search directories for files to open.
 -v, --verbose    Verbose logging messages.
 -h, --help       Display this usage information.
     --version    Show version and exit.
@@ -193,6 +196,9 @@ while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
         -f|--force)
             force=true
             ;;
+        -r|--recursive)
+            maxdepth=""
+            ;;
         -v|--verbose)
             verbose=true
             ;;
@@ -255,11 +261,6 @@ function open_file {
     if [ "$filepath" != "-" ]; then
         realpath=$(canonicalize "$filepath")
         log "$realpath"
-
-        if [ -d "$filepath" ]; then
-            echo "$filepath is a directory and rmate is unable to handle directories."
-            exit 1
-        fi
 
         if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
             if [[ $force = false ]]; then
@@ -398,8 +399,22 @@ read -r server_info 0<&3
 
 log $server_info
 
-for i in "${!filepaths[@]}"; do
-    open_file "$i"
+opened=0;
+
+for ((i=0; i<${#filepaths[@]}; i++)); do
+    if [ -d "${filepaths[$i]}" ]; then
+        log "Loading files from directory ${filepaths[$i]}"
+        
+        while read -r filepath; do
+            filepaths+=($filepath)
+        done < <(find ${filepaths[$i]} $maxdepth -type f)
+    elif [ $opened -eq $maxfiles ]; then
+        log "Maximum number of files opened $maxfiles"
+        break
+    else
+        open_file "$i"
+        opened=$((opened + 1))
+    fi
 done
 
 echo "." 1>&3
