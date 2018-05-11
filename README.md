@@ -19,6 +19,14 @@ sudo wget -O /usr/local/bin/rmate https://raw.github.com/aurora/rmate/master/rma
 sudo chmod a+x /usr/local/bin/rmate
 ```
 
+or without `sudo` (make sure `~/.local/bin` is in your `PATH`)
+
+```bash
+mkdir -p ~/.local/bin
+wget -O ~/.local/bin/rmate https://raw.github.com/aurora/rmate/master/rmate
+chmod a+x ~/.local/bin/rmate
+```
+
 or with [bpkg](https://github.com/bpkg/bpkg)
 
 ```bash
