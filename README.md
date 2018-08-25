@@ -8,7 +8,7 @@ ruby. Here is my attempt to replace this ruby script with a shell script, becaus
 some cases a ruby installation might just be too much overhead for just editing remote
 files.
 
-This script can be used with some other editors via available plug-ins.
+This script can be used with some other editors (e.g. Sublime Text) via available plug-ins.
 
 The shell script needs to be copied to the server, you want to remote edit files, on.
 After that, you should set-up your editor to communicate with rmate.
@@ -63,6 +63,40 @@ and execute:
 ```bash
 rmate -H textmate-host test.txt
 ```
+
+#### Sublime Text
+
+To use rmate with Sublime Text, yoou need to install a plug-in, e.g.
+[rsub](https://github.com/henrikpersson/rsub)
+or [RemoteSubl](https://github.com/randy3k/RemoteSubl).
+
+You can install plug-ins via [Package Control](https://packagecontrol.io/).
+[Install Package Control](https://packagecontrol.io/installation),
+press `Cmd + Shift + P` for Mac and `Ctrl + Shift + P` for Linux/Windows,
+select `Package Control: Install Package`,
+and, finally, select `rsub` for rsub or `RemoteSubl` for RemoteSubl.
+
+Also, you can install plug-ins manually.
+
+* Linux
+```bash
+git clone https://github.com/henrikpersson/rsub ~/.config/sublime-text-3/Packages/rsub
+git clone https://github.com/randy3k/RemoteSubl ~/.config/sublime-text-3/Packages/RemoteSubl
+```
+
+* Windows
+```batch
+git clone https://github.com/henrikpersson/rsub %APPDATA%/Sublime\ Text\ 3/Packages/rsub
+git clone https://github.com/randy3k/RemoteSubl %APPDATA%/Sublime\ Text\ 3/Packages/RemoteSubl
+```
+
+* OS X
+```bash
+git clone https://github.com/henrikpersson/rsub ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/rsub
+git clone https://github.com/randy3k/RemoteSubl ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/RemoteSubl
+```
+
+Then do the same things as described in [Local clients](#local-clients) part of this document.
 
 ### Example
 
