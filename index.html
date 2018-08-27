@@ -29,121 +29,122 @@
     <div class="container">
       <section id="main_content">
         <h1>
-<a id="rmate" class="anchor" href="#rmate" aria-hidden="true"><span class="octicon octicon-link"></span></a>rmate</h1>
+        <a id="rmate" class="anchor" href="#rmate" aria-hidden="true"><span class="octicon octicon-link"></span></a>rmate</h1>
 
-<h2>
-<a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h2>
+        <h2>
+        <a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h2>
 
-<p>TextMate 2 adds a nice feature, where it is possible to edit files on a remote server
-using a helper script. The original helper script provided with TM2 is implemented in
-ruby. Here is my attempt to replace this ruby script with a shell script, because in 
-some cases a ruby installation might just be to much overhead for just editing remote
-files.</p>
+        <p>TextMate 2 adds a nice feature, where it is possible to edit files on a remote server
+        using a helper script. The original helper script provided with TM2 is implemented in
+        ruby. Here is my attempt to replace this ruby script with a shell script, because in 
+        some cases a ruby installation might just be to much overhead for just editing remote
+        files.</p>
 
-<p>The shell script needs to be copied to the server, you want to remote edit files, on.
-After that, open your TM2 preferences and enable "Allow rmate connections" setting in
-the "Terminal" settings and adjust the setting "Access for" according to your needs:</p>
+        <p>This script can be used with some other editors (e.g. Sublime Text) via available plug-ins.</p>
 
-<h3>
-<a id="local-clients" class="anchor" href="#local-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Local clients</h3>
+        <p>The shell script needs to be copied to the server, you want to remote edit files, on.
+        After that, After that, you should set-up your editor to communicate with rmate.</p>
 
-<p>It's a good idea to allow access only for local clients. In this case you need to open
-a SSH connection to the system you want to edit a file on and specify a remote tunnel in
-addition:</p>
+        <h3>
+        <a id="local-clients" class="anchor" href="#local-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Local clients</h3>
 
-<pre><code>ssh -R 52698:localhost:52698 user@example.com
-</code></pre>
+        <p>It's a good idea to allow access only for local clients. In this case you need to open
+        a SSH connection to the system you want to edit a file on and specify a remote tunnel in
+        addition:</p>
 
-<p>If you are logged in on the remote system, you can now just execute</p>
+        <pre><code>ssh -R 52698:localhost:52698 user@example.com
+        </code></pre>
 
-<pre><code>rmate test.txt
-</code></pre>
+        <p>If you are logged in on the remote system, you can now just execute</p>
 
-<h3>
-<a id="remote-clients" class="anchor" href="#remote-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Remote clients</h3>
+        <pre><code>rmate test.txt
+        </code></pre>
 
-<p>On some machines, where port forwarding is not possible, for example due to a missing ssh
-daemon, you can allow access for "remote clients". Just ssh or telnet to the remote machine
-and execute:</p>
+        <h3>
+        <a id="remote-clients" class="anchor" href="#remote-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Remote clients</h3>
 
-<pre><code>rmate -H textmate-host test.txt
-</code></pre>
+        <p>On some machines, where port forwarding is not possible, for example due to a missing ssh
+        daemon, you can allow access for "remote clients". Just ssh or telnet to the remote machine
+        and execute:</p>
 
-<h3>
-<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
+        <pre><code>rmate -H textmate-host test.txt
+        </code></pre>
 
-<p>Example session: Editing html file located on an SGI o2: <a href="https://github.com/aurora/rmate/wiki/Screens">https://github.com/aurora/rmate/wiki/Screens</a></p>
+        <h3>
+        <a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
 
-<h2>
-<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
+        <p>Example session: Editing html file located on an SGI o2: <a href="https://github.com/aurora/rmate/wiki/Screens">https://github.com/aurora/rmate/wiki/Screens</a></p>
 
-<p>A bash with compiled support for "/dev/tcp" is required. This is not the case on some 
-older linux distributions, like Ubuntu 9.x.</p>
+        <h2>
+        <a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
-<h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+        <p>A bash with compiled support for <code>/dev/tcp</code> is required. This is not the case on some 
+        older linux distributions, like Ubuntu 9.x.</p>
 
-<pre><code>$ ./rmate [-H host-name] [-p port-number] [-w] [-l line-number] [-m display-name] [-t file-type] [-f] [-v] file-path
-</code></pre>
+        <h2>
+        <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
 
-<h3>
-<a id="required-parameters" class="anchor" href="#required-parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Required parameters</h3>
+        <pre><code>$ ./rmate [-H host-name] [-p port-number] [-w] [-l line-number] [-m display-name] [-t file-type] [-f] [-v] file-path
+        </code></pre>
 
-<p><em>rmate</em> takes a file as last argument. This argument is always required.</p>
+        <h3>
+        <a id="required-parameters" class="anchor" href="#required-parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Required parameters</h3>
 
-<h3>
-<a id="optional-parameters" class="anchor" href="#optional-parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Optional parameters</h3>
+        <p><em>rmate</em> takes a file as last argument. This argument is always required.</p>
 
-<pre><code>-H  connect to host (default: localhost)
--p  port number to use for connection (default: 52698)
--w  wait for file to be closed by TextMate
--l  place caret on line number after loading file
--m  the display name shown in TextMate
--t  treat file as having specified type
--f  open even if file is not writable
--v  verbose logging messages
--h  display this usage information
-</code></pre>
+        <h3>
+        <a id="optional-parameters" class="anchor" href="#optional-parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Optional parameters</h3>
 
-<h3>
-<a id="default-parameter-configuration" class="anchor" href="#default-parameter-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Default parameter configuration</h3>
+        <pre><code>-H  connect to host (default: localhost)
+        -p  port number to use for connection (default: 52698)
+        -w  wait for file to be closed by TextMate
+        -l  place caret on line number after loading file
+        -m  the display name shown in TextMate
+        -t  treat file as having specified type
+        -f  open even if file is not writable
+        -v  verbose logging messages
+        -h  display this usage information
+        </code></pre>
 
-<p>Some default parameters (<em>host</em> and <em>port</em>) can be configured by defining them 
-as the environment variables <code>RMATE_HOST</code> and <code>RMATE_PORT</code> or by putting them 
-in a configuration file. The configuration files loaded are <code>/etc/rmate.rc</code> 
-and <code>~/.rmate.rc</code>, e.g.:</p>
+        <h3>
+        <a id="default-parameter-configuration" class="anchor" href="#default-parameter-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Default parameter configuration</h3>
 
-<pre><code>host: auto  # prefer host from SSH_CONNECTION over localhost
-port: 52698
-</code></pre>
+        <p>Some default parameters (<em>host</em> and <em>port</em>) can be configured by defining them 
+        as the environment variables <code>RMATE_HOST</code> and <code>RMATE_PORT</code> or by putting them 
+        in a configuration file. The configuration files loaded are <code>/etc/rmate.rc</code> 
+        and <code>~/.rmate.rc</code>, e.g.:</p>
 
-<p>The precedence for setting the configuration is (higher precedence counts):</p>
+        <pre><code>host: auto  # prefer host from SSH_CONNECTION over localhost
+        port: 52698
+        </code></pre>
 
-<ol>
-<li>default (localhost, 52698)</li>
-<li>/etc/rmate.rc</li>
-<li>~/.rmate.rc</li>
-<li>environment variables (RMATE_HOST, RMATE_PORT)</li>
-</ol>
+        <p>The precedence for setting the configuration is (higher precedence counts):</p>
 
-<h2>
-<a id="disclaimer" class="anchor" href="#disclaimer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
+        <ol>
+        <li>default (localhost, 52698)</li>
+        <li><code>/etc/rmate.rc</code></li>
+        <li><code>~/.rmate.rc</code></li>
+        <li>environment variables (<code>RMATE_HOST</code>, <code>RMATE_PORT</code>)</li>
+        </ol>
 
-<p>Use with caution. This software may contain serious bugs. I can not be made responsible for
-any damage the software may cause to your system or files.</p>
+        <h2>
+        <a id="disclaimer" class="anchor" href="#disclaimer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
 
-<h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+        <p>Use with caution. This software may contain serious bugs. I can not be made responsible for
+        any damage the software may cause to your system or files.</p>
 
-<p>rmate</p>
+        <h2>
+        <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
-<p>Copyright (C) 2011 by Harald Lapp <a href="mailto:harald@octris.org">harald@octris.org</a></p>
+        <p>rmate</p>
 
-<p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+        <p>Copyright (C) 2011 by Harald Lapp <a href="mailto:harald@octris.org">harald@octris.org</a></p>
 
-<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+        <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
 
-<p>You should have received a copy of the GNU General Public License along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+        <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+
+        <p>You should have received a copy of the GNU General Public License along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
       </section>
     </div>
 
