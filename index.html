@@ -29,121 +29,177 @@
     <div class="container">
       <section id="main_content">
         <h1>
-<a id="rmate" class="anchor" href="#rmate" aria-hidden="true"><span class="octicon octicon-link"></span></a>rmate</h1>
+        <a id="rmate" class="anchor" href="#rmate" aria-hidden="true"><span class="octicon octicon-link"></span></a>rmate</h1>
 
-<h2>
-<a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h2>
+        <h2>
+        <a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h2>
 
-<p>TextMate 2 adds a nice feature, where it is possible to edit files on a remote server
-using a helper script. The original helper script provided with TM2 is implemented in
-ruby. Here is my attempt to replace this ruby script with a shell script, because in 
-some cases a ruby installation might just be to much overhead for just editing remote
-files.</p>
+        <p>TextMate 2 adds a nice feature, where it is possible to edit files on a remote server
+        using a helper script. The original helper script provided with TM2 is implemented in
+        ruby. Here is my attempt to replace this ruby script with a shell script, because in
+        some cases a ruby installation might just be too much overhead for just editing remote
+        files.</p>
 
-<p>The shell script needs to be copied to the server, you want to remote edit files, on.
-After that, open your TM2 preferences and enable "Allow rmate connections" setting in
-the "Terminal" settings and adjust the setting "Access for" according to your needs:</p>
+        <p>This script can be used with some other editors (e.g. Sublime Text) via available plug-ins.</p>
 
-<h3>
-<a id="local-clients" class="anchor" href="#local-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Local clients</h3>
+        <p>The shell script needs to be copied to the server, you want to remote edit files, on.
+        After that, you should set-up your editor to communicate with rmate.</p>
 
-<p>It's a good idea to allow access only for local clients. In this case you need to open
-a SSH connection to the system you want to edit a file on and specify a remote tunnel in
-addition:</p>
+        <h3>
+        <a id="quick-install" class="anchor" href="#quick-install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick install</h3>
 
-<pre><code>ssh -R 52698:localhost:52698 user@example.com
-</code></pre>
+        <div class="highlight highlight-source-shell"><pre>sudo wget -O /usr/local/bin/rmate https://raw.githubusercontent.com/aurora/rmate/master/rmate
+        sudo chmod a+x /usr/local/bin/rmate</pre></div>
+        <p>or with <a href="https://github.com/bpkg/bpkg">bpkg</a></p>
 
-<p>If you are logged in on the remote system, you can now just execute</p>
+        <div class="highlight highlight-source-shell"><pre>bpkg install aurora/rmate</pre></div>
+        <h3>
+        <a id="set-up-editor" class="anchor" href="#set-up-editor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Set-up editor</h3>
 
-<pre><code>rmate test.txt
-</code></pre>
+        <h4>
+        <a id="textmate-2" class="anchor" href="#textmate-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>TextMate 2</h4>
 
-<h3>
-<a id="remote-clients" class="anchor" href="#remote-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Remote clients</h3>
+        <p>Open your TM2 preferences and enable "Allow rmate connections" setting in
+        the "Terminal" settings and adjust the setting "Access for" according to your needs:</p>
 
-<p>On some machines, where port forwarding is not possible, for example due to a missing ssh
-daemon, you can allow access for "remote clients". Just ssh or telnet to the remote machine
-and execute:</p>
+        <p><a href="https://camo.githubusercontent.com/700ab35ccdcb9302a5dddca81e8053af70215641/68747470733a2f2f6d6163726f6d617465732e636f6d2f77702d636f6e74656e742f75706c6f6164732f323031312f31322f7465726d696e616c5f707265666572656e6365732e706e67" target="_blank"><img src="https://camo.githubusercontent.com/700ab35ccdcb9302a5dddca81e8053af70215641/68747470733a2f2f6d6163726f6d617465732e636f6d2f77702d636f6e74656e742f75706c6f6164732f323031312f31322f7465726d696e616c5f707265666572656e6365732e706e67" alt="TM2_terminal_preferences" data-canonical-src="https://macromates.com/wp-content/uploads/2011/12/terminal_preferences.png" style="max-width:100%;"></a></p>
 
-<pre><code>rmate -H textmate-host test.txt
-</code></pre>
+        <h5>
+        <a id="local-clients" class="anchor" href="#local-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Local clients</h5>
 
-<h3>
-<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
+        <p>It's a good idea to allow access only for local clients. In this case you need to open
+        a SSH connection to the system you want to edit a file on and specify a remote tunnel in
+        addition:</p>
 
-<p>Example session: Editing html file located on an SGI o2: <a href="https://github.com/aurora/rmate/wiki/Screens">https://github.com/aurora/rmate/wiki/Screens</a></p>
+        <div class="highlight highlight-source-shell"><pre>ssh -R 52698:localhost:52698 user@example.com</pre></div>
+        <p>Or put the following lines in your local <code>~/.ssh/config</code>:</p>
 
-<h2>
-<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
+        <pre lang="ssh-conf"><code>Host example.com
+            RemoteForward 52698 127.0.0.1:52698
+        </code></pre>
 
-<p>A bash with compiled support for "/dev/tcp" is required. This is not the case on some 
-older linux distributions, like Ubuntu 9.x.</p>
+        <p>If you are logged in on the remote system, you can now just execute</p>
 
-<h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+        <div class="highlight highlight-source-shell"><pre>rmate test.txt</pre></div>
+        <h5>
+        <a id="remote-clients" class="anchor" href="#remote-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Remote clients</h5>
 
-<pre><code>$ ./rmate [-H host-name] [-p port-number] [-w] [-l line-number] [-m display-name] [-t file-type] [-f] [-v] file-path
-</code></pre>
+        <p>On some machines, where port forwarding is not possible, for example due to a missing ssh
+        daemon, you can allow access for "remote clients". Just ssh or telnet to the remote machine
+        and execute:</p>
 
-<h3>
-<a id="required-parameters" class="anchor" href="#required-parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Required parameters</h3>
+        <div class="highlight highlight-source-shell"><pre>rmate -H textmate-host test.txt</pre></div>
+        <h4>
+        <a id="sublime-text" class="anchor" href="#sublime-text" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sublime Text</h4>
 
-<p><em>rmate</em> takes a file as last argument. This argument is always required.</p>
+        <p>To use rmate with Sublime Text, yoou need to install a plug-in, e.g.
+        <a href="https://github.com/henrikpersson/rsub">rsub</a>
+        or <a href="https://github.com/randy3k/RemoteSubl">RemoteSubl</a>.</p>
 
-<h3>
-<a id="optional-parameters" class="anchor" href="#optional-parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Optional parameters</h3>
+        <p>You can install plug-ins via <a href="https://packagecontrol.io/">Package Control</a>.
+        <a href="https://packagecontrol.io/installation">Install Package Control</a>,
+        press <code>Cmd + Shift + P</code> for Mac and <code>Ctrl + Shift + P</code> for Linux/Windows,
+        select <code>Package Control: Install Package</code>,
+        and, finally, select <code>rsub</code> for rsub or <code>RemoteSubl</code> for RemoteSubl.</p>
 
-<pre><code>-H  connect to host (default: localhost)
--p  port number to use for connection (default: 52698)
--w  wait for file to be closed by TextMate
--l  place caret on line number after loading file
--m  the display name shown in TextMate
--t  treat file as having specified type
--f  open even if file is not writable
--v  verbose logging messages
--h  display this usage information
-</code></pre>
+        <p>Also, you can install plug-ins manually.</p>
 
-<h3>
-<a id="default-parameter-configuration" class="anchor" href="#default-parameter-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Default parameter configuration</h3>
+        <ul>
+        <li>Linux</li>
+        </ul>
+        <div class="highlight highlight-source-shell"><pre>git clone https://github.com/henrikpersson/rsub <span class="pl-k">~</span>/.config/sublime-text-3/Packages/rsub
+        git clone https://github.com/randy3k/RemoteSubl <span class="pl-k">~</span>/.config/sublime-text-3/Packages/RemoteSubl</pre></div>
+        <ul>
+        <li>Windows</li>
+        </ul>
+        <div class="highlight highlight-source-batchfile"><pre>git clone https://github.com/henrikpersson/rsub <span class="pl-smi">%APPDATA%</span>/Sublime\ Text\ 3/Packages/rsub
+        git clone https://github.com/randy3k/RemoteSubl <span class="pl-smi">%APPDATA%</span>/Sublime\ Text\ 3/Packages/RemoteSubl</pre></div>
+        <ul>
+        <li>OS X</li>
+        </ul>
+        <div class="highlight highlight-source-shell"><pre>git clone https://github.com/henrikpersson/rsub <span class="pl-k">~</span>/Library/Application<span class="pl-cce">\ </span>Support/Sublime<span class="pl-cce">\ </span>Text<span class="pl-cce">\ </span>3/Packages/rsub
+        git clone https://github.com/randy3k/RemoteSubl <span class="pl-k">~</span>/Library/Application<span class="pl-cce">\ </span>Support/Sublime<span class="pl-cce">\ </span>Text<span class="pl-cce">\ </span>3/Packages/RemoteSubl</pre></div>
+        <p>Then do the same things as described in <a href="#local-clients">Local clients</a> part of this document.</p>
 
-<p>Some default parameters (<em>host</em> and <em>port</em>) can be configured by defining them 
-as the environment variables <code>RMATE_HOST</code> and <code>RMATE_PORT</code> or by putting them 
-in a configuration file. The configuration files loaded are <code>/etc/rmate.rc</code> 
-and <code>~/.rmate.rc</code>, e.g.:</p>
+        <h3>
+        <a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
 
-<pre><code>host: auto  # prefer host from SSH_CONNECTION over localhost
-port: 52698
-</code></pre>
+        <p>Example session: Editing html file located on an SGI o2: <a href="https://github.com/aurora/rmate/wiki/Screens">https://github.com/aurora/rmate/wiki/Screens</a></p>
 
-<p>The precedence for setting the configuration is (higher precedence counts):</p>
+        <h2>
+        <a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
-<ol>
-<li>default (localhost, 52698)</li>
-<li>/etc/rmate.rc</li>
-<li>~/.rmate.rc</li>
-<li>environment variables (RMATE_HOST, RMATE_PORT)</li>
-</ol>
+        <p>A bash with compiled support for <code>/dev/tcp</code> is required. This is not the case on some
+        older linux distributions, like Ubuntu 9.x.</p>
 
-<h2>
-<a id="disclaimer" class="anchor" href="#disclaimer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
+        <h2>
+        <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
 
-<p>Use with caution. This software may contain serious bugs. I can not be made responsible for
-any damage the software may cause to your system or files.</p>
+        <p>Edit specified file</p>
 
-<h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+        <div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">./rmate [arguments] [--] file-path</span></pre></div>
+        <p>Read text from stdin</p>
 
-<p>rmate</p>
+        <div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>hello TextMate<span class="pl-pds">"</span></span> <span class="pl-k">|</span> ./rmate [arguments] -</span></pre></div>
+        <h3>
+        <a id="arguments" class="anchor" href="#arguments" aria-hidden="true"><span class="octicon octicon-link"></span></a>Arguments</h3>
 
-<p>Copyright (C) 2011 by Harald Lapp <a href="mailto:harald@octris.org">harald@octris.org</a></p>
+        <pre><code>-H, --host HOST  Connect to HOST. Use 'auto' to detect the host from SSH.
+        -p, --port PORT  Port number to use for connection.
+        -w, --[no-]wait  Wait for file to be closed by TextMate.
+        -l, --line LINE  Place caret on line number after loading file.
+        +N               Alias for --line, if N is a number (eg.: +5).
+        -m, --name NAME  The display name shown in TextMate.
+        -t, --type TYPE  Treat file as having specified type.
+        -n, --new        Open in a new window (Sublime Text).
+        -f, --force      Open even if file is not writable.
+        -v, --verbose    Verbose logging messages.
+        -h, --help       Display this usage information.
+            --version    Show version and exit.
+        </code></pre>
 
-<p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+        <h3>
+        <a id="default-parameter-configuration" class="anchor" href="#default-parameter-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Default parameter configuration</h3>
 
-<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+        <p>Some default parameters (<code>host</code> and <code>port</code>) can be configured by defining them
+        as the environment variables <code>RMATE_HOST</code> and <code>RMATE_PORT</code> or by putting them
+        in a configuration file. The configuration files loaded are <code>/etc/rmate.rc</code>
+        and <code>~/.rmate.rc</code>, e.g.:</p>
 
-<p>You should have received a copy of the GNU General Public License along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+        <div class="highlight highlight-source-ini"><pre>host: auto  <span class="pl-c"><span class="pl-c">#</span> prefer host from SSH_CONNECTION over localhost</span>
+        port: 52698</pre></div>
+        <p>Alternative notation for configuration file is:</p>
+
+        <div class="highlight highlight-source-ini"><pre><span class="pl-k">host</span>=auto
+        <span class="pl-k">port</span>=52698</pre></div>
+        <p>The precedence for setting the configuration is (higher precedence counts):</p>
+
+        <ol>
+        <li>default (<code>localhost</code>, <code>52698</code>)</li>
+        <li><code>/etc/rmate.rc</code></li>
+        <li><code>~/.rmate/rmate.rc</code></li>
+        <li><code>~/.rmate.rc</code></li>
+        <li>environment variables (<code>RMATE_HOST</code>, <code>RMATE_PORT</code>)</li>
+        </ol>
+        <h2>
+        <a id="disclaimer" class="anchor" href="#disclaimer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
+
+        <p>Use with caution. This software may contain serious bugs. I can not be made responsible for
+        any damage the software may cause to your system or files.</p>
+
+        <h2>
+        <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/aurora/rmate/blob/master/COPYING.txt">License</a>
+        </h2>
+
+        <p>rmate</p>
+
+        <p>Copyright (C) 2011-2018 by Harald Lapp <a href="mailto:harald@octris.org">harald@octris.org</a></p>
+
+        <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+
+        <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+
+        <p>You should have received a copy of the GNU General Public License along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
       </section>
     </div>
 
