@@ -136,7 +136,7 @@ function canonicalize {
     fi
 
     local dir=$(dirpath "$filepath")
-    
+
     if [ -L "$filepath" ]; then
         relativepath=$(cd "$dir" || { echo "unable to cd to $dir" 1>&2; exit; } ; readlink "$(basename "$filepath")")
         result=$(dirpath "$relativepath")/$(basename "$relativepath")
@@ -148,14 +148,14 @@ function canonicalize {
             result="$dir/$result"
         fi
     fi
-    
+
     echo "$result"
 }
 
-while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
+while [[ "$1" != "" ]]; do
     case $1 in
         -)
-            break
+            filepaths+=("-")
             ;;
         --)
             shift
@@ -204,12 +204,16 @@ while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
             showusage
             exit 1
             ;;
-        +[0-9]*)
+        +[0-9][0-9]*)
             selections+=(${1:1})
             ;;
         *)
-            showusage
-            exit 1
+            if [[ "${1:0:1}" = "-" ]]; then
+                showusage
+                exit 1
+            else
+                filepaths+=("$1")
+            fi
             ;;
     esac
 
@@ -220,7 +224,7 @@ if [[ "$host" = "auto" && "$SSH_CONNECTION" != "" ]]; then
     host=${SSH_CONNECTION%% *}
 fi
 
-filepaths=("$@")
+filepaths=("${filepaths[@]}" "$@")
 
 if [ "${filepaths[*]}" = "" ]; then
     if [[ $nowait = false ]]; then
