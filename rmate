@@ -198,11 +198,11 @@ while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
             ;;
         --version)
             echo "$version_string"
-            exit 1
+            exit 0
             ;;
         -h|-\?|--help)
             showusage
-            exit 1
+            exit 0
             ;;
         +[0-9]*)
             selections+=(${1:1})
