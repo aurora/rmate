@@ -57,7 +57,7 @@ hostname=$($(hostname_command))
 # default configuration
 host=localhost
 port=52698
-unix=
+proxy_command=
 eval home=$(builtin printf "~%q" "${SUDO_USER:-$LOGNAME}")
 
 function load_config {
@@ -66,7 +66,7 @@ function load_config {
 
     local host_pattern="^host(:[[:space:]]+|=)([^ ]+)"
     local port_pattern="^port(:[[:space:]]+|=)([0-9]+)"
-    local unix_pattern="^unix(:[[:space:]]+|=)(.+)"
+    local proxy_command_pattern="^proxy_command(:[[:space:]]+|=)(.+)"
 
     if [ -f "$rc_file" ]; then
         while read -r row; do
@@ -74,8 +74,8 @@ function load_config {
                 host=${BASH_REMATCH[2]}
             elif [[ "$row" =~ $port_pattern ]]; then
                 port=${BASH_REMATCH[2]}
-            elif [[ "$row" =~ $unix_pattern ]]; then
-                unix=${BASH_REMATCH[2]}
+            elif [[ "$row" =~ $proxy_command_pattern ]]; then
+                proxy_command=${BASH_REMATCH[2]}
             fi
         done < "$rc_file"
     fi
@@ -87,7 +87,7 @@ done
 
 host="${RMATE_HOST:-$host}"
 port="${RMATE_PORT:-$port}"
-unix="${RMATE_UNIX:-$unix}"
+proxy_command="${RMATE_PROXY_COMMAND:-$proxy_command}"
 
 # misc initialization
 filepaths=()
@@ -107,7 +107,9 @@ function showusage {
 -H, --host HOST  Connect to HOST. Use 'auto' to detect the host from
                  SSH. Defaults to $host.
 -p, --port PORT  Port number to use for connection. Defaults to $port.
--u, --unix PATH  UNIX socket for connection. Overrides host/port.
+-P, --proxy-command COMMAND
+                 Proxy command to connect rmate to a UNIX socket. Overrides
+                 host/port.
 -w, --[no-]wait  Wait for file to be closed by TextMate.
 -l, --line LINE  Place caret on line number after loading file.
 +N               Alias for --line, if N is a number (eg.: +5).
@@ -190,8 +192,8 @@ while [[ "$1" != "" ]]; do
             port=$2
             shift
             ;;
-        -u|--unix)
-            unix=$2
+        -P|--proxy-command)
+            proxy_command=$2
             shift
             ;;
         -w|--wait)
@@ -416,15 +418,10 @@ function handle_connection {
 
 # connect to textmate and send command
 #
-if [ -n "$unix" ] ; then
-    if [ ! -S "$unix" ] ; then
-        echo "$unix is not a socket!"
-        exit 1
-    fi
-
+if [ -n "$proxy_command" ] ; then
     fifodir=$(mktemp -d) && \
         mkfifo "$fifodir/in" "$fifodir/out" && \
-        ( (nc -U "$unix" < "$fifodir/in" > "$fifodir/out" &) &) && \
+        ( ($proxy_command < "$fifodir/in" > "$fifodir/out" &) &) && \
         exec 4> "$fifodir/in" && \
         exec 3< "$fifodir/out"
 
@@ -433,7 +430,7 @@ if [ -n "$unix" ] ; then
     [ -d "$fifodir" ] && rm -rf "$fifodir"
 
     if [ $connect_status -gt 0 ] ; then
-        echo "Unable to connect to TextMate on $unix"
+        echo "Unable to connect to TextMate using proxy command"
         exit 1
     fi
 else
