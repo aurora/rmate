@@ -39,27 +39,70 @@ the "Terminal" settings and adjust the setting "Access for" according to your ne
 
 It's a good idea to allow access only for local clients. In this case you need to open
 a SSH connection to the system you want to edit a file on and specify a remote tunnel in
-addition:
+addition. There are two possibilities for editing remote files:
+
+* Using port forwarding
+* Using UNIX socket
+
+Read ahead to learn about both possibilities.
+
+###### Using port forwarding
+
 ```bash
 ssh -R 52698:localhost:52698 user@example.com
 ```
 
 Or put the following lines in your local `~/.ssh/config`:
+
 ```ssh-conf
 Host example.com
     RemoteForward 52698 127.0.0.1:52698
 ```
 
 If you are logged in on the remote system, you can now just execute
+
 ```bash
 rmate test.txt
 ```
+
+###### Using UNIX socket
+
+To gain more privacy it's recommended to use a feature available in recent openSSH versions, where
+it's possible to forward a remote socket to a local port. Rmate supports this by supporting a proxy-
+command. The proxy-command can be defined by using the environment variable `RMATE_PROXY_COMMAND`,
+the config-file setting `proxy_command` or the arguments `-P` and `--proxy-command`.
+
+Socket forwarding using ssh command:
+
+```bash
+ssh -R /home/user/.rmate.socket:localhost:52698 user@example.com
+```
+
+Or put the following lines in your local `~/.ssh/config`:
+
+```ssh-conf
+Host example.com
+    RemoteForward /home/user/.rmate.socket localhost:52698
+```
+
+It's recommended to configure the proxy command in a config file on the remote host in this case, for
+example in `~/.rmate.rc`:
+
+```bash
+proxy_command=nc -U /home/user/.rmate.socket
+```
+
+If the `nc` command on your remote host does not support the -U argument, differend commands can be used
+as proxy for example socat or a simple perl script by Jordan Webb, which can be downloaded from:
+
+https://raw.githubusercontent.com/wiki/aurora/rmate/files/rmate-proxy.pl
 
 ##### Remote clients
 
 On some machines, where port forwarding is not possible, for example due to a missing ssh
 daemon, you can allow access for "remote clients". Just ssh or telnet to the remote machine
 and execute:
+
 ```bash
 rmate -H textmate-host test.txt
 ```
@@ -110,11 +153,13 @@ older linux distributions, like Ubuntu 9.x.
 ## Usage
 
 Edit specified file
+
 ```console
 $ ./rmate [arguments] [--] file-path
 ```
 
 Read text from stdin
+
 ```console
 $ echo "hello TextMate" | ./rmate [arguments] -
 ```
@@ -123,6 +168,9 @@ $ echo "hello TextMate" | ./rmate [arguments] -
 
     -H, --host HOST  Connect to HOST. Use 'auto' to detect the host from SSH.
     -p, --port PORT  Port number to use for connection.
+    -P, --proxy-command COMMAND
+                     Proxy command to connect rmate to a UNIX socket. Overrides
+                     host/port.
     -w, --[no-]wait  Wait for file to be closed by TextMate.
     -l, --line LINE  Place caret on line number after loading file.
     +N               Alias for --line, if N is a number (eg.: +5).
@@ -141,12 +189,14 @@ Some default parameters (`host` and `port`) can be configured by defining them
 as the environment variables `RMATE_HOST` and `RMATE_PORT` or by putting them
 in a configuration file. The configuration files loaded are `/etc/rmate.rc`
 and `~/.rmate.rc`, e.g.:
+
 ```ini
 host: auto  # prefer host from SSH_CONNECTION over localhost
 port: 52698
 ```
 
 Alternative notation for configuration file is:
+
 ```ini
 host=auto
 port=52698
