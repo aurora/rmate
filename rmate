@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # rmate
-# Copyright (C) 2011-2018 by Harald Lapp <harald@octris.org>
+# Copyright (C) 2011-2019 by Harald Lapp <harald@octris.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
 
 # init
 #
-version="1.0.1"
-version_date="2018-01-08"
+version="1.0.2"
+version_date="2019-04-08"
 version_string="rmate-sh $version ($version_date)"
 
 # determine hostname
@@ -131,6 +131,22 @@ function dirpath {
     (cd "$(dirname "$1")" >/dev/null 2>/dev/null || { echo "unable to cd to $1 directory" 1>&2; exit; } ; pwd -P)
 }
 
+function resolvepath {
+    local filepath="$1"
+    local directory
+
+    while [ -L "$filepath" ]; do
+        directory="$(cd -P "$(dirname "$filepath")" && pwd)"
+        filepath="$(readlink "$filepath")"
+
+        if [[ "${filepath:0:1}" != "/" ]]; then
+            filepath="$directory/$filepath"
+        fi
+    done
+
+    echo "$filepath"
+}
+
 function canonicalize {
     local filepath="$1"
     local relativepath
@@ -141,9 +157,9 @@ function canonicalize {
     fi
 
     local dir=$(dirpath "$filepath")
-    
+
     if [ -L "$filepath" ]; then
-        relativepath=$(cd "$dir" || { echo "unable to cd to $dir" 1>&2; exit; } ; readlink "$(basename "$filepath")")
+        relativepath=$(cd "$dir" || { echo "unable to cd to $dir" 1>&2; exit; } ; resolvepath "$(basename "$filepath")")
         result=$(dirpath "$relativepath")/$(basename "$relativepath")
     else
         result=$(basename "$filepath")
@@ -153,14 +169,14 @@ function canonicalize {
             result="$dir/$result"
         fi
     fi
-    
+
     echo "$result"
 }
 
-while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
+while [[ "$1" != "" ]]; do
     case $1 in
         -)
-            break
+            filepaths+=("-")
             ;;
         --)
             shift
@@ -207,18 +223,22 @@ while [[ "${1:0:1}" = "-" || "$1" =~ ^\+([0-9]+)$ ]]; do
             ;;
         --version)
             echo "$version_string"
-            exit 1
+            exit 0
             ;;
         -h|-\?|--help)
             showusage
-            exit 1
+            exit 0
             ;;
-        +[0-9]*)
+        +[0-9][0-9]*)
             selections+=(${1:1})
             ;;
         *)
-            showusage
-            exit 1
+            if [[ "${1:0:1}" = "-" ]]; then
+                showusage
+                exit 1
+            else
+                filepaths+=("$1")
+            fi
             ;;
     esac
 
@@ -229,7 +249,7 @@ if [[ "$host" = "auto" && "$SSH_CONNECTION" != "" ]]; then
     host=${SSH_CONNECTION%% *}
 fi
 
-filepaths=("$@")
+filepaths=("${filepaths[@]}" "$@")
 
 if [ "${filepaths[*]}" = "" ]; then
     if [[ $nowait = false ]]; then
