@@ -75,7 +75,7 @@ function load_config {
             elif [[ "$row" =~ $port_pattern ]]; then
                 port=${BASH_REMATCH[2]}
             elif [[ "$row" =~ $proxy_command_pattern ]]; then
-                proxy_command=${BASH_REMATCH[2]}
+                proxy_command="${BASH_REMATCH[2]}"
             fi
         done < "$rc_file"
     fi
