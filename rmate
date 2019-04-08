@@ -126,6 +126,22 @@ function dirpath {
     (cd "$(dirname "$1")" >/dev/null 2>/dev/null || { echo "unable to cd to $1 directory" 1>&2; exit; } ; pwd -P)
 }
 
+function resolvepath {
+    local filepath="$1"
+    local directory
+
+    while [ -L "$filepath" ]; do
+        directory="$(cd -P "$(dirname "$filepath")" && pwd)"
+        filepath="$(readlink "$filepath")"
+
+        if [[ "${filepath:0:1}" != "/" ]]; then
+            filepath="$directory/$filepath"
+        fi
+    done
+
+    echo "$filepath"
+}
+
 function canonicalize {
     local filepath="$1"
     local relativepath
@@ -136,9 +152,9 @@ function canonicalize {
     fi
 
     local dir=$(dirpath "$filepath")
-    
+
     if [ -L "$filepath" ]; then
-        relativepath=$(cd "$dir" || { echo "unable to cd to $dir" 1>&2; exit; } ; readlink "$(basename "$filepath")")
+        relativepath=$(cd "$dir" || { echo "unable to cd to $dir" 1>&2; exit; } ; resolvepath "$(basename "$filepath")")
         result=$(dirpath "$relativepath")/$(basename "$relativepath")
     else
         result=$(basename "$filepath")
@@ -148,7 +164,7 @@ function canonicalize {
             result="$dir/$result"
         fi
     fi
-    
+
     echo "$result"
 }
 
