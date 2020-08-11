@@ -278,13 +278,13 @@ function open_file {
 
         if [ -d "$filepath" ]; then
             echo "$filepath is a directory and rmate is unable to handle directories."
-            exit 1
+            return 1
         fi
 
         if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
             if [[ $force = false ]]; then
                 echo "File $filepath is not writable! Use -f to open anyway."
-                exit 1
+                return 1
             elif [[ $verbose = true ]]; then
                 log "File $filepath is not writable! Opening anyway."
             fi
@@ -405,33 +405,29 @@ function handle_connection {
     log "Done"
 }
 
-function rmate_each {
-    # connect to textmate and send command
-    #
-    exec 3<> "/dev/tcp/$host/$port"
+# connect to textmate and send command
+#
+exec 3<> "/dev/tcp/$host/$port"
 
-    if [ $? -gt 0 ]; then
-        echo "Unable to connect to TextMate on $host:$port"
-        exit 1
-    fi
+if [ $? -gt 0 ]; then
+    echo "Unable to connect to TextMate on $host:$port"
+    exit 1
+fi
 
-    read -r server_info 0<&3
-    log $server_info
+read -r server_info 0<&3
 
-    open_file "$1"
-    [[ $? != 0 ]] && return 1
-
-    echo "." 1>&3
-
-    if [[ $nowait = true ]]; then
-        exec </dev/null >/dev/null 2>/dev/null
-        ( (handle_connection &) &)
-    else
-        handle_connection
-    fi
-}
+log $server_info
 
 for i in "${!filepaths[@]}"; do
-    (rmate_each $i)
+    open_file "$i"
     [[ $? = 0 ]] && new='false'
 done
+
+echo "." 1>&3
+
+if [[ $nowait = true ]]; then
+    exec </dev/null >/dev/null 2>/dev/null
+    ( (handle_connection &) &)
+else
+    handle_connection
+fi
