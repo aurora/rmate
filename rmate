@@ -420,8 +420,10 @@ log $server_info
 
 for i in "${!filepaths[@]}"; do
     open_file "$i"
-    [[ $? = 0 ]] && new='false'
+    [[ $? = 0 ]] && new='false' && success='true'
 done
+
+[[ -z $success ]] && exit 1
 
 echo "." 1>&3
 
