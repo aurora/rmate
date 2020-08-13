@@ -278,13 +278,13 @@ function open_file {
 
         if [ -d "$filepath" ]; then
             echo "$filepath is a directory and rmate is unable to handle directories."
-            exit 1
+            return 1
         fi
 
         if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
             if [[ $force = false ]]; then
                 echo "File $filepath is not writable! Use -f to open anyway."
-                exit 1
+                return 1
             elif [[ $verbose = true ]]; then
                 log "File $filepath is not writable! Opening anyway."
             fi
@@ -420,7 +420,10 @@ log $server_info
 
 for i in "${!filepaths[@]}"; do
     open_file "$i"
+    [[ $? = 0 ]] && new='false' && success='true'
 done
+
+[[ -z $success ]] && exit 1
 
 echo "." 1>&3
 
