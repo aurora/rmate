@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # rmate
-# Copyright (C) 2011-2019 by Harald Lapp <harald@octris.org>
+# Copyright (C) 2011-present by Harald Lapp <harald@octris.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -97,6 +97,7 @@ filetypes=()
 verbose=false
 nowait=true
 force=false
+success=false
 
 # process command-line parameters
 #
@@ -289,13 +290,13 @@ function open_file {
 
         if [ -d "$filepath" ]; then
             echo "$filepath is a directory and rmate is unable to handle directories."
-            exit 1
+            return 1
         fi
 
         if [ -f "$realpath" ] && [ ! -w "$realpath" ]; then
             if [[ $force = false ]]; then
                 echo "File $filepath is not writable! Use -f to open anyway."
-                exit 1
+                return 1
             elif [[ $verbose = true ]]; then
                 log "File $filepath is not writable! Opening anyway."
             fi
@@ -447,7 +448,10 @@ log $server_info
 
 for i in "${!filepaths[@]}"; do
     open_file "$i"
+    [[ $? = 0 ]] && new=false && success=true
 done
+
+[[ $success = false ]] && exit 1
 
 echo "." 1>&4
 
