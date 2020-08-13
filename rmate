@@ -93,6 +93,7 @@ filetypes=()
 verbose=false
 nowait=true
 force=false
+success=false
 
 # process command-line parameters
 #
@@ -420,10 +421,10 @@ log $server_info
 
 for i in "${!filepaths[@]}"; do
     open_file "$i"
-    [[ $? = 0 ]] && new='false' && success='true'
+    [[ $? = 0 ]] && new=false && success=true
 done
 
-[[ -z $success ]] && exit 1
+[[ $success = false ]] && exit 1
 
 echo "." 1>&3
 
