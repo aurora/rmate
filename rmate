@@ -84,6 +84,7 @@ done
 host="${RMATE_HOST:-$host}"
 port="${RMATE_PORT:-$port}"
 
+tmp_dir="${TMPDIR:-/tmp}"
 
 # misc initialization
 filepaths=()
@@ -376,7 +377,7 @@ function handle_connection {
                     ;;
                 "data")
                     if [ "$tmp" = "" ]; then
-                        tmp="/tmp/rmate.$RANDOM.$$"
+                        tmp="$tmp_dir/rmate.$RANDOM.$$"
                         touch "$tmp"
                     fi
 
