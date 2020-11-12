@@ -66,7 +66,7 @@ rmate -H textmate-host test.txt
 
 #### Sublime Text
 
-To use rmate with Sublime Text, yoou need to install a plug-in, e.g.
+To use rmate with Sublime Text, you need to install a plug-in, e.g.
 [rsub](https://github.com/henrikpersson/rsub)
 or [RemoteSubl](https://github.com/randy3k/RemoteSubl).
 
@@ -94,6 +94,31 @@ git clone https://github.com/randy3k/RemoteSubl %APPDATA%/Sublime\ Text\ 3/Packa
 ```bash
 git clone https://github.com/henrikpersson/rsub ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/rsub
 git clone https://github.com/randy3k/RemoteSubl ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/RemoteSubl
+```
+
+Then do the same things as described in [Local clients](#local-clients) part of this document.
+
+#### VS Code
+
+To use rmate with VS Code, you need to install an extension, e.g.
+[Remote VSCode](https://marketplace.visualstudio.com/items?itemName=rafaelmaiolla.remote-vscode)
+
+![vscode](https://github.com/fanrenng/rmate/blob/master/screenshot/vscode.png?raw=true)
+
+```json
+//-------- Remote VSCode configuration --------
+
+// Port number to use for connection.
+"remote.port": 52698
+
+// Launch the server on start up.
+"remote.onstartup": true
+
+// Address to listen on.
+"remote.host": "127.0.0.1"
+
+// If set to true, error for remote.port already in use won't be shown anymore.
+"remote.dontShowPortAlreadyInUseError": false
 ```
 
 Then do the same things as described in [Local clients](#local-clients) part of this document.
