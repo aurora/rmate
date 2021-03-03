@@ -77,7 +77,7 @@ function load_config {
     fi
 }
 
-for i in "/etc/${0##*/}" $home/."${0##*/}/${0##*/}.rc" $home/."${0##*/}.rc"; do
+for i in "/etc/${0##*/}" "/etc/${0##*/}.rc" $home/."${0##*/}/${0##*/}.rc" $home/."${0##*/}.rc"; do
     load_config $i
 done
 
