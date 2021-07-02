@@ -1,10 +1,13 @@
 BIN ?= rmate
 PREFIX ?= /usr/local
+prefix ?= $(PREFIX)
+exec_prefix ?= $(prefix)
+bindir ?= $(exec_prefix)/bin
 
 install:
-	cp rmate $(PREFIX)/bin/$(BIN)
+	cp rmate $(bindir)/$(BIN)
 
 uninstall:
-	rm -f $(PREFIX)/bin/$(BIN)
+	rm -f $(bindir)/$(BIN)
 
 .PHONY: install uninstall
