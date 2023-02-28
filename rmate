@@ -194,11 +194,11 @@ while [[ "$1" != "" ]]; do
             nowait=true
             ;;
         -l|--line)
-            selections+=($2)
+            selections+=("$2")
             shift
             ;;
         -m|--name)
-            displaynames+=($2)
+            displaynames+=("$2")
             shift
             ;;
         -t|--type)
